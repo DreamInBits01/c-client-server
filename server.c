@@ -8,13 +8,17 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <string.h>
+#include <errno.h>
+#include <poll.h>
+#define POLL_CAPACITY 5
 #define BACKLOG 5
 #define REQUEST_BUFFER 1024
 #define RESPONSE_BUFFER 1024
 int create_listening_socket(char *port);
-int accept_new_client(int listening_socket, struct sockaddr_storage *client_information, socklen_t *client_information_length);
+// int accept_new_client(int listening_socket, struct sockaddr_storage *client_information, socklen_t *client_information_length);
+int accept_new_client(int listening_socket);
 bool handle_client(int client_fd);
-bool add_to_poll();
+bool add_to_poll(int fd, struct pollfd **poll_fds, int *poll_index, int *poll_size);
 bool delete_from_poll();
 
 int main(int argc, char **argv)
@@ -30,12 +34,55 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
     int listening_socket = create_listening_socket(argv[1]);
+    int poll_size = POLL_CAPACITY;
+    int poll_index = 0;
+    struct pollfd *poll_fds = calloc(POLL_CAPACITY + 1, sizeof(struct pollfd));
+    if (poll_fds == NULL)
+    {
+        fprintf(stderr, "Error while allocating poll_fds\n");
+        exit(EXIT_FAILURE);
+    }
+    // Add listening socket
+    add_to_poll(listening_socket, &poll_fds, &poll_index, &poll_size);
     while (1)
     {
-        struct sockaddr_storage client_information;
-        socklen_t client_information_length;
-        int client_fd = accept_new_client(listening_socket, &client_information, &client_information_length);
-        handle_client(client_fd);
+        // Poll sockets
+        int status = poll(poll_fds, poll_index, 2000);
+        if (status == -1)
+        {
+            // ERROR
+            fprintf(stderr, "[Server] Poll error: %s\n", strerror(errno));
+            exit(EXIT_FAILURE);
+        }
+        else if (status == 0)
+        {
+            // NO SOCKET IS READY
+            printf("[Server] Waiting...\n");
+            continue;
+        }
+        for (size_t i = 0; i < poll_index; i++)
+        {
+            if (!(poll_fds[i].revents & POLLIN))
+            {
+                continue;
+            }
+            printf("Ready for I/O operation...\n");
+            if (poll_fds[i].fd == listening_socket)
+            {
+                // New client to accept
+                int client_fd = accept_new_client(listening_socket);
+                add_to_poll(client_fd, &poll_fds, &poll_index, &poll_size);
+            }
+            else
+            {
+                // Data to read from clients
+                handle_client(poll_fds[i].fd);
+                // close(poll_fds[i].fd);
+            }
+        }
+        // struct sockaddr_storage client_information;
+        // socklen_t client_information_length;
+        // int client_fd = accept_new_client(listening_socket);
     };
     close(listening_socket);
     return EXIT_SUCCESS;
@@ -109,12 +156,29 @@ bool handle_client(int client_fd)
     close(client_fd);
     return true;
 }
-int accept_new_client(int listening_socket, struct sockaddr_storage *client_information, socklen_t *client_information_length)
+int accept_new_client(int listening_socket)
 {
     /*
         Must be added to the poll of fds!
     */
-    memset(client_information, 0, sizeof(client_information));
-    int client_fd = accept(listening_socket, (struct sockaddr *)client_information, client_information_length);
+    // memset(client_information, 0, sizeof(client_information));
+    int client_fd = accept(listening_socket, NULL, NULL);
     return client_fd;
+}
+bool add_to_poll(int fd, struct pollfd **poll_fds, int *poll_index, int *poll_size)
+{
+    if (*poll_index == *poll_size)
+    {
+        *poll_size *= 2;
+        *poll_fds = realloc(*poll_fds, *poll_size * sizeof(struct pollfd));
+        printf("Reallocating...\n");
+        if (*poll_fds == NULL)
+        {
+            fprintf(stderr, "Error while reallocating poll_fds\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    (*poll_fds)[*poll_index].fd = fd;
+    (*poll_fds)[*poll_index].events = POLLIN;
+    (*poll_index)++;
 }
