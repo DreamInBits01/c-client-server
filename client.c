@@ -6,8 +6,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #define RESPONSE_SIZE 256
-#define PORT 4002
-
+#define RESEND_ATTEMTS 4
 /*
 
 
@@ -22,9 +21,9 @@
 */
 int main(int ac, char **argv)
 {
-    if (ac != 2)
+    if (ac != 3)
     {
-        printf("Please Provide the correct number of args\n");
+        printf("usage: ./client <PORT> <MESSAGE>\n");
         exit(EXIT_FAILURE);
     }
     printf("--- CLIENT ---\n");
@@ -40,34 +39,41 @@ int main(int ac, char **argv)
     // AF_INET = TCP server
     server_address.sin_family = AF_INET;
     // Port to connect to
-    server_address.sin_port = htons(PORT);
+    server_address.sin_port = htons(atoi(argv[1]));
     //
-    server_address.sin_addr.s_addr = INADDR_ANY;
+    server_address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
     int connection_status = connect(socket_fd, (struct sockaddr *)&server_address, sizeof(server_address));
-    if (connection_status < 0)
+    if (connection_status == -1)
     {
         perror("Error connection failure\n");
         exit(EXIT_FAILURE);
     }
-    int message_length = strlen(argv[1]);
-    int bytes_sent = send(socket_fd, argv[1], message_length, 0);
-    if (bytes_sent == -1)
+    int message_length = strlen(argv[2]);
+    int total_bytes_sent = 0;
+    int bytes_sent = send(socket_fd, argv[2], message_length, 0);
+    total_bytes_sent += bytes_sent;
+    if (total_bytes_sent == -1)
     {
         printf("Error while sending message\n");
     }
-    else if (bytes_sent == message_length)
+    else if (total_bytes_sent == message_length)
     {
         printf("Message was sent completely\n");
     }
     else
     {
         printf("Message was sent partially (%d bytes)\n", bytes_sent);
+        for (size_t i = 0; i < RESEND_ATTEMTS; i++)
+        {
+            bytes_sent = send(socket_fd, argv[2] + total_bytes_sent, message_length, 0);
+            total_bytes_sent += bytes_sent;
+        }
     }
     int bytes_read = 1;
     char server_response[RESPONSE_SIZE];
     // Wait for a response via while
-    while (bytes_read >= 0)
+    while (1)
     {
         bytes_read = recv(socket_fd, server_response, RESPONSE_SIZE, 0);
         if (bytes_read == 0)
