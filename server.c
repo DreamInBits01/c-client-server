@@ -14,13 +14,17 @@
 #define BACKLOG 5
 #define REQUEST_BUFFER 1024
 #define RESPONSE_BUFFER 1024
+typedef struct
+{
+    struct pollfd client;
+    struct timeval last_request_time;
+} Connection;
 int create_listening_socket(char *port);
 // int accept_new_client(int listening_socket, struct sockaddr_storage *client_information, socklen_t *client_information_length);
 int accept_new_client(int listening_socket);
 bool handle_client(int client_fd);
 bool add_to_poll(int fd, struct pollfd **poll_fds, int *poll_index, int *poll_size);
-bool delete_from_poll();
-
+bool delete_from_poll(int item_index, struct pollfd **poll_fds, int *poll_index);
 int main(int argc, char **argv)
 {
     /*
@@ -77,12 +81,9 @@ int main(int argc, char **argv)
             {
                 // Data to read from clients
                 handle_client(poll_fds[i].fd);
-                // close(poll_fds[i].fd);
+                close(poll_fds[i].fd);
             }
         }
-        // struct sockaddr_storage client_information;
-        // socklen_t client_information_length;
-        // int client_fd = accept_new_client(listening_socket);
     };
     close(listening_socket);
     return EXIT_SUCCESS;
@@ -181,4 +182,11 @@ bool add_to_poll(int fd, struct pollfd **poll_fds, int *poll_index, int *poll_si
     (*poll_fds)[*poll_index].fd = fd;
     (*poll_fds)[*poll_index].events = POLLIN;
     (*poll_index)++;
+}
+bool delete_from_poll(int fd_index, struct pollfd **poll_fds, int *poll_index)
+{
+    // The order preservation of this array doesn't matter so
+    //  Copy the fd from the end of the array to this index
+    (*poll_fds)[fd_index] = (*poll_fds)[*poll_index];
+    (*poll_index)--;
 }
