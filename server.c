@@ -11,7 +11,6 @@
 #include <errno.h>
 #include <poll.h>
 #define POLL_CAPACITY 5
-#define BACKLOG 5
 #define REQUEST_BUFFER 1024
 #define RESPONSE_BUFFER 1024
 typedef struct
@@ -19,12 +18,8 @@ typedef struct
     struct pollfd client;
     struct timeval last_request_time;
 } Connection;
-int create_listening_socket(char *port);
 // int accept_new_client(int listening_socket, struct sockaddr_storage *client_information, socklen_t *client_information_length);
-int accept_new_client(int listening_socket);
 bool handle_client(int client_fd);
-bool add_to_poll(int fd, struct pollfd **poll_fds, int *poll_index, int *poll_size);
-bool delete_from_poll(int item_index, struct pollfd **poll_fds, int *poll_index);
 int main(int argc, char **argv)
 {
     /*
@@ -88,52 +83,6 @@ int main(int argc, char **argv)
     close(listening_socket);
     return EXIT_SUCCESS;
 }
-int create_listening_socket(char *port)
-{
-    struct addrinfo hints, *response;
-    memset(&hints, 0, sizeof(hints));
-    // Set hints
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE;
-
-    // Get address information
-    int getaddrinfo_status = getaddrinfo("127.0.0.1", port, &hints, &response);
-    if (getaddrinfo_status != 0)
-    {
-        fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(getaddrinfo_status));
-        return -1;
-    }
-    struct addrinfo *current_response = response;
-    int bind_status = -1;
-    int socket_fd;
-    // Loop to get a valid response
-    while (current_response != NULL)
-    {
-        socket_fd = socket(current_response->ai_family, current_response->ai_socktype, current_response->ai_protocol);
-        if (socket_fd == -1)
-            continue;
-        if (bind(socket_fd, current_response->ai_addr, current_response->ai_addrlen) == 0)
-        {
-            bind_status = 0;
-        };
-        current_response = current_response->ai_next;
-    }
-    // Cleanup
-    freeaddrinfo(response);
-    if (bind_status == -1)
-    {
-        fprintf(stderr, "Bind failed!\n");
-        exit(EXIT_FAILURE);
-    }
-    if (listen(socket_fd, BACKLOG) == -1)
-    {
-        fprintf(stderr, "Listen failed!\n");
-        exit(EXIT_FAILURE);
-    };
-    printf("Listening on port:%s\n", port);
-    return socket_fd;
-}
 bool handle_client(int client_fd)
 {
     char request_buffer[REQUEST_BUFFER];
@@ -165,28 +114,4 @@ int accept_new_client(int listening_socket)
     // memset(client_information, 0, sizeof(client_information));
     int client_fd = accept(listening_socket, NULL, NULL);
     return client_fd;
-}
-bool add_to_poll(int fd, struct pollfd **poll_fds, int *poll_index, int *poll_size)
-{
-    if (*poll_index == *poll_size)
-    {
-        *poll_size *= 2;
-        *poll_fds = realloc(*poll_fds, *poll_size * sizeof(struct pollfd));
-        printf("Reallocating...\n");
-        if (*poll_fds == NULL)
-        {
-            fprintf(stderr, "Error while reallocating poll_fds\n");
-            exit(EXIT_FAILURE);
-        }
-    }
-    (*poll_fds)[*poll_index].fd = fd;
-    (*poll_fds)[*poll_index].events = POLLIN;
-    (*poll_index)++;
-}
-bool delete_from_poll(int fd_index, struct pollfd **poll_fds, int *poll_index)
-{
-    // The order preservation of this array doesn't matter so
-    //  Copy the fd from the end of the array to this index
-    (*poll_fds)[fd_index] = (*poll_fds)[*poll_index];
-    (*poll_index)--;
 }
