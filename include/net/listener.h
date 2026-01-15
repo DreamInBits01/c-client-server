@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <poll.h>
 #include "structs.h"
+#include "utils.h"
 #define BACKLOG 20
 
 int tcp_listner_bind(char *host, char *port);

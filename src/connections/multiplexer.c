@@ -1,16 +1,16 @@
 #include "multiplexer.h"
-bool init_multiplexer(ConnectionsManager *connections_manager)
+int init_multiplexer(ConnectionsManager *connections_manager)
 {
     int epoll_fd = epoll_create1(0);
     if (epoll_fd == -1)
     {
         fprintf(stderr, "[init_multiplexer] failed\n");
-        return false;
+        return -1;
     }
     connections_manager->epoll_fd = epoll_fd;
-    return true;
+    return 0;
 }
-bool register_socket(int epoll_fd, int socket_fd, __uint32_t events)
+int register_socket(int epoll_fd, int socket_fd, __uint32_t events)
 {
     struct epoll_event event;
     event.data.fd = socket_fd;
@@ -18,29 +18,29 @@ bool register_socket(int epoll_fd, int socket_fd, __uint32_t events)
     {
         fprintf(stderr, "[register_socket] failed\n");
         close(epoll_fd);
-        return false;
+        return -1;
     }
-    return true;
+    return 0;
 }
-bool unregister_socket(int epoll_fd, int socket_fd)
+int unregister_socket(int epoll_fd, int socket_fd)
 {
     if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, socket_fd, NULL) == -1)
     {
         fprintf(stderr, "[unregister_socket] failed\n");
         close(epoll_fd);
-        return false;
+        return -1;
     }
-    return true;
+    return 0;
 }
-bool destroy_multiplexer(ConnectionsManager *connections_manager)
+int destroy_multiplexer(ConnectionsManager *connections_manager)
 {
     int status;
     status = close(connections_manager->epoll_fd);
     if (status == -1)
     {
         fprintf(stderr, "[destroy_multiplexer] failed\n");
-        return false;
+        return -1;
     }
     connections_manager->epoll_fd = -1;
-    return true;
+    return 0;
 }
