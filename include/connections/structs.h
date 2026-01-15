@@ -15,7 +15,7 @@ typedef struct
     struct epoll_event event;
     TCPClient *tcp_client;
     struct timeval last_connection_time;
-    void(*handler);
+    void (*handler)(void *ctx);
 } Connection;
 /*
     The connection manager will be responsible to manage clients of the provided listening_socket.

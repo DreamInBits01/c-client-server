@@ -23,11 +23,11 @@ int register_socket(int epoll_fd, int socket_fd, __uint32_t events)
     }
     return 0;
 }
-int unregister_socket(int epoll_fd, int socket_fd)
+int deregister_socket(int epoll_fd, int socket_fd)
 {
     if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, socket_fd, NULL) == -1)
     {
-        fprintf(stderr, "[unregister_socket] failed\n");
+        fprintf(stderr, "[deregister_socket] failed\n");
         close(epoll_fd);
         return -1;
     }
