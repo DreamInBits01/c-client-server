@@ -1,8 +1,9 @@
-#include "listener.h"
+#include "net/listener.h"
 
 int tcp_listner_bind(char *host, char *port)
 {
     // To check the status at each procedure
+    printf("Host:%s", host);
     int status;
     struct addrinfo hints, *response;
     memset(&hints, 0, sizeof(hints));

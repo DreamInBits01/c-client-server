@@ -1,4 +1,4 @@
-#include "multiplexer.h"
+#include "connections/multiplexer.h"
 int init_multiplexer(ConnectionsManager *connections_manager)
 {
     int epoll_fd = epoll_create1(0);
@@ -15,6 +15,7 @@ int register_socket(int epoll_fd, int socket_fd, __uint32_t events)
     struct epoll_event event;
     event.data.fd = socket_fd;
     event.events = events;
+    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, socket_fd, &event) == -1)
     {
         fprintf(stderr, "[register_socket] failed\n");
         close(epoll_fd);
