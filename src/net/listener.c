@@ -58,6 +58,7 @@ int tcp_listner_bind(char *host, char *port)
 TCPClient *tcp_listner_accept(int listening_socket)
 {
     TCPClient *tcp_client = malloc(sizeof(TCPClient));
+    memset(tcp_client, 0, sizeof(TCPClient));
     int socket_fd = accept(listening_socket, (struct sockaddr *)&tcp_client->client_information, &tcp_client->client_information_len);
     if (socket_fd == -1)
     {
@@ -89,6 +90,7 @@ int listening_socket_handler(void *ctx)
     status = register_connection(connections_manager, connection);
     if (status == -1)
     {
+        free(tcp_client);
         fprintf(stderr, "[listening_socket_handler] register_connection failed\n");
         return -1;
     }

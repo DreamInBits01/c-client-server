@@ -18,7 +18,6 @@ int register_socket(int epoll_fd, int socket_fd, __uint32_t events)
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, socket_fd, &event) == -1)
     {
         fprintf(stderr, "[register_socket] failed\n");
-        close(epoll_fd);
         return -1;
     }
     return 0;
