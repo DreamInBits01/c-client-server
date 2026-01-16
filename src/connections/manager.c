@@ -1,8 +1,3 @@
-/*
-1-delete connection
-2-add connection
-3-delete connections after a while
-*/
 #include "connections/manager.h"
 int register_connection(ConnectionsManager *connections_manager, Connection *connection)
 {
