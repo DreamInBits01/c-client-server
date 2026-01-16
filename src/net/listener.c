@@ -1,6 +1,6 @@
 #include "net/listener.h"
 
-int tcp_listner_bind(char *host, char *port)
+int tcp_listener_bind(char *host, char *port)
 {
     // To check the status at each procedure
     printf("Host:%s", host);
@@ -37,38 +37,38 @@ int tcp_listner_bind(char *host, char *port)
     freeaddrinfo(response);
     if (status == -1)
     {
-        fprintf(stderr, "[tcp_listner_bind] Bind failed: %s\n", strerror(errno));
+        fprintf(stderr, "[tcp_listener_bind] Bind failed: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
     if (listen(socket_fd, BACKLOG) == -1)
     {
-        fprintf(stderr, "[tcp_listner_bind] Listen failed: %s\n", strerror(errno));
+        fprintf(stderr, "[tcp_listener_bind] Listen failed: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     };
     // Make socket non-blocking
     status = make_socket_nonblocking(socket_fd);
     if (status == -1)
     {
-        fprintf(stderr, "[tcp_listner_bind] make_socket_nonblocking failed");
+        fprintf(stderr, "[tcp_listener_bind] make_socket_nonblocking failed");
         close(socket_fd);
         exit(EXIT_FAILURE);
     }
     return socket_fd;
 }
-TCPClient *tcp_listner_accept(int listening_socket)
+TCPClient *tcp_listener_accept(int listening_socket)
 {
     TCPClient *tcp_client = malloc(sizeof(TCPClient));
     memset(tcp_client, 0, sizeof(TCPClient));
     int socket_fd = accept(listening_socket, (struct sockaddr *)&tcp_client->client_information, &tcp_client->client_information_len);
     if (socket_fd == -1)
     {
-        fprintf(stderr, "[tcp_listner_accept] error: %s\n", strerror(errno));
+        fprintf(stderr, "[tcp_listener_accept] error: %s\n", strerror(errno));
         return NULL;
     }
     int status = make_socket_nonblocking(socket_fd);
     if (status == -1)
     {
-        fprintf(stderr, "[tcp_listner_accept] make_socket_nonblocking failed");
+        fprintf(stderr, "[tcp_listener_accept] make_socket_nonblocking failed");
         close(socket_fd);
         exit(EXIT_FAILURE);
     }
@@ -79,7 +79,7 @@ int listening_socket_handler(void *ctx)
 {
     int status;
     ConnectionsManager *connections_manager = (ConnectionsManager *)ctx;
-    TCPClient *tcp_client = tcp_listner_accept(connections_manager->listening_socket);
+    TCPClient *tcp_client = tcp_listener_accept(connections_manager->listening_socket);
     if (tcp_client == NULL)
         return -1;
     Connection *connection = malloc(sizeof(Connection));

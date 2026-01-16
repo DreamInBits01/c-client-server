@@ -19,7 +19,7 @@ int register_connection(ConnectionsManager *connections_manager, Connection *con
     }
     return 1;
 }
-int dereigster_connection(ConnectionsManager *connections_manager, Connection *connection)
+int deregister_connection(ConnectionsManager *connections_manager, Connection *connection)
 {
     HASH_DEL(connections_manager->connections, connection);
     deregister_socket(connections_manager->epoll_fd, connection->socket_fd);

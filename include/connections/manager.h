@@ -27,7 +27,7 @@ int register_connection(ConnectionsManager *connections_manager, Connection *con
  * @param connection Pointer to the Connection to deregister
  * @return 1 on success
  */
-int dereigster_connection(ConnectionsManager *connections_manager, Connection *connection);
+int deregister_connection(ConnectionsManager *connections_manager, Connection *connection);
 
 /**
  * @brief Cleans up resources associated with a single connection

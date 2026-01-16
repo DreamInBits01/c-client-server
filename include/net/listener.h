@@ -30,7 +30,7 @@
  * @note Function exits on bind, listen, or non-blocking configuration failures
  * @note BACKLOG constant determines the maximum queue length for pending connections
  */
-int tcp_listner_bind(char *host, char *port);
+int tcp_listener_bind(char *host, char *port);
 
 /**
  * @brief Accepts a new TCP client connection
@@ -46,7 +46,7 @@ int tcp_listner_bind(char *host, char *port);
  * @note Function exits if non-blocking configuration fails
  * @note Returns NULL if accept fails (e.g., no pending connections)
  */
-TCPClient *tcp_listner_accept(int listening_socket);
+TCPClient *tcp_listener_accept(int listening_socket);
 
 /**
  * @brief Handler for incoming connections on the listening socket
