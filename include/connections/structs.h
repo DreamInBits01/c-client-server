@@ -3,6 +3,7 @@
 #include "net/structs.h"
 #include <sys/time.h>
 #include "sys/epoll.h"
+#include <uthash/src/uthash.h>
 #define MAX_CONNECTIONS 4096
 #define MAX_EVENTS 512
 /*
@@ -14,8 +15,10 @@ typedef struct
 {
     struct epoll_event event;
     TCPClient *tcp_client;
+    int socket_fd;
     struct timeval last_connection_time;
     void (*handler)(void *ctx);
+    UT_hash_handle hh; /* makes this structure hashable */
 } Connection;
 /*
     The connection manager will be responsible to manage clients of the provided listening_socket.

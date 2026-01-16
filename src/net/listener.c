@@ -45,7 +45,7 @@ int tcp_listner_bind(char *host, char *port)
         fprintf(stderr, "[tcp_listner_bind] Listen failed: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     };
-    // Make socket nob-blocking
+    // Make socket non-blocking
     status = make_socket_nonblocking(socket_fd);
     if (status == -1)
     {
@@ -73,4 +73,24 @@ TCPClient *tcp_listner_accept(int listening_socket)
     }
     tcp_client->socket_fd = socket_fd;
     return tcp_client;
+}
+int listening_socket_handler(void *ctx)
+{
+    int status;
+    ConnectionsManager *connections_manager = (ConnectionsManager *)ctx;
+    TCPClient *tcp_client = tcp_listner_accept(connections_manager->listening_socket);
+    if (tcp_client == NULL)
+        return -1;
+    Connection *connection = malloc(sizeof(Connection));
+    memset(connection, 0, sizeof(Connection));
+    connection->tcp_client = tcp_client;
+    connection->socket_fd = tcp_client->socket_fd;
+    gettimeofday(&connection->last_connection_time, NULL);
+    status = register_connection(connections_manager, connection);
+    if (status == -1)
+    {
+        fprintf(stderr, "[listening_socket_handler] register_connection failed\n");
+        return -1;
+    }
+    return 1;
 }

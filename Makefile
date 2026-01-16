@@ -1,11 +1,12 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
+CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -Iexternal
 LDFLAGS = 
 
 # Directories
 SRC_DIR = src
 INC_DIR = include
+EXT_DIR = external
 OBJ_DIR = obj
 BIN_DIR = bin
 
@@ -14,20 +15,22 @@ TARGET = $(BIN_DIR)/server
 
 # Source files
 SRCS = src/main.c \
-	src/connections/manager.c \
-	src/connections/multiplexer.c \
-	src/net/listener.c \
-	src/net/utils.c \
-	src/event_loop/index.c
+       src/connections/manager.c \
+       src/connections/multiplexer.c \
+       src/net/listener.c \
+       src/net/utils.c \
+       src/event_loop/index.c
+
 # Object files
 OBJS = $(SRCS:src/%.c=obj/%.o)
 
 # Header dependencies
 DEPS = include/connections/multiplexer.h \
-	include/connections/structs.h \
-	include/net/listener.h \
-	include/net/structs.h \
-	include/net/utils.h
+       include/connections/manager.h \
+       include/connections/structs.h \
+       include/net/listener.h \
+       include/net/structs.h \
+       include/net/utils.h
 
 # Default target
 .PHONY: all

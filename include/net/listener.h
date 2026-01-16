@@ -14,6 +14,7 @@
 #include <poll.h>
 #include "structs.h"
 #include "utils.h"
+#include "connections/manager.h"
 #define BACKLOG 20
 
 int tcp_listner_bind(char *host, char *port);

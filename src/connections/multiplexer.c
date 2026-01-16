@@ -33,15 +33,14 @@ int deregister_socket(int epoll_fd, int socket_fd)
     }
     return 0;
 }
-int destroy_multiplexer(ConnectionsManager *connections_manager)
+int destroy_multiplexer(int epoll_fd)
 {
     int status;
-    status = close(connections_manager->epoll_fd);
+    status = close(epoll_fd);
     if (status == -1)
     {
         fprintf(stderr, "[destroy_multiplexer] failed\n");
         return -1;
     }
-    connections_manager->epoll_fd = -1;
     return 0;
 }
