@@ -27,7 +27,6 @@ int deregister_socket(int epoll_fd, int socket_fd)
     if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, socket_fd, NULL) == -1)
     {
         fprintf(stderr, "[deregister_socket] failed\n");
-        close(epoll_fd);
         return -1;
     }
     return 0;

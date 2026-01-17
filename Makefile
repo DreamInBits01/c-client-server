@@ -19,8 +19,7 @@ SRCS = src/main.c \
        src/connections/multiplexer.c \
        src/net/listener.c \
        src/net/utils.c \
-       src/event_loop/index.c
-
+       src/events/event_loop.c 
 # Object files
 OBJS = $(SRCS:src/%.c=obj/%.o)
 
@@ -30,7 +29,8 @@ DEPS = include/connections/multiplexer.h \
        include/connections/structs.h \
        include/net/listener.h \
        include/net/structs.h \
-       include/net/utils.h
+       include/net/utils.h \
+       include/events/event_loop.h 
 
 # Default target
 .PHONY: all

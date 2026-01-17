@@ -39,7 +39,7 @@ int cleanup_connections_manager(ConnectionsManager *connections_manager)
     // Delete All cnonnections
     HASH_ITER(hh, connections_manager->connections, current_connection, tmp)
     {
-        HASH_DEL(connections_manager->connections, current_connection); /* delete; users advances to next */
+        HASH_DEL(connections_manager->connections, current_connection); /* delete; advances to next */
         cleanup_connection(current_connection);                         /* free connection  */
     }
     free(connections_manager);

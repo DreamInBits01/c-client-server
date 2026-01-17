@@ -1,2 +1,10 @@
-- [connections]: Implement connections manager.
-- [net]: Implement non-blocking sockets in the listener.
+- [connections]:
+  - add response and request buffering to connections
+  - Implement connections manager crud. DONE.
+- [net]:
+  - Implement non-blocking sockets in the listener. DONE.
+  - implement listening_socket_handler
+- [event_loop]:
+  - takes a connections manager
+  - epoll_wait
+  - dispatches events
