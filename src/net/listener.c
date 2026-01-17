@@ -85,9 +85,8 @@ int listening_socket_handler(void *ctx)
     Connection *connection = malloc(sizeof(Connection));
     memset(connection, 0, sizeof(Connection));
     connection->tcp_client = tcp_client;
-    connection->socket_fd = tcp_client->socket_fd;
     gettimeofday(&connection->last_connection_time, NULL);
-    status = register_connection(connections_manager, connection);
+    status = register_connection(connections_manager, connection, tcp_client->socket_fd);
     if (status == -1)
     {
         free(tcp_client);

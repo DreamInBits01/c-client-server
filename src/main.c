@@ -15,8 +15,7 @@ int main()
     connections_manager.listening_socket = listening_socket;
     init_multiplexer(&connections_manager);
     // Register a connection
-    connection.socket_fd = listening_socket;
-    register_connection(&connections_manager, &connection);
+    register_connection(&connections_manager, &connection, listening_socket);
     event_loop_run(&connections_manager);
     return 0;
 }

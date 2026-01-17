@@ -15,7 +15,7 @@
  * @param connection Pointer to the Connection to register
  * @return 1 on success, -1 on failure (null parameters or socket registration error)
  */
-int register_connection(ConnectionsManager *connections_manager, Connection *connection);
+int register_connection(ConnectionsManager *connections_manager, Connection *connection, int socket_fd);
 
 /**
  * @brief Deregisters and cleans up a connection
