@@ -86,6 +86,11 @@ void listening_socket_handler(void *ctx)
     memset(connection, 0, sizeof(Connection));
     connection->tcp_client = tcp_client;
     gettimeofday(&connection->last_connection_time, NULL);
+    /*
+        -Should attach a handler to the clients sockets
+        -The handler should distrbute the workload to the workers
+        -Workers should parse each request and handle the client
+    */
     status = register_connection(connections_manager, connection, tcp_client->socket_fd, NULL);
     if (status == -1)
     {

@@ -56,7 +56,7 @@ TCPClient *tcp_listener_accept(int listening_socket);
  * This function is typically called when the listening socket has pending connections.
  *
  * @param ctx Context pointer, expected to be a ConnectionsManager instance
- * @return 1 on success, -1 on failure (accept error or registration failure)
+ * @return 0 on success, -1 on failure (accept error or registration failure)
  *
  * @note Allocates memory for Connection structure; freed during connection cleanup
  * @note Sets connection's last_connection_time to current time

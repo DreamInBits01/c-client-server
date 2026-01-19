@@ -1,4 +1,17 @@
 #include "connections/manager.h"
+int initialize_connections_manager(ConnectionsManager *connections_manager)
+{
+    int status;
+    int listening_socket = tcp_listener_bind("", "5050");
+    connections_manager->listening_socket = listening_socket;
+    status = init_multiplexer(&connections_manager);
+    if (status == -1)
+    {
+        fprintf(stderr, "[initialize_connections_manager] init_multiplexer failed");
+        exit(EXIT_FAILURE);
+    }
+    return 0;
+}
 int register_connection(ConnectionsManager *connections_manager, Connection *connection, int socket_fd, void (*handler)(void *ctx))
 {
     int status;
@@ -14,14 +27,25 @@ int register_connection(ConnectionsManager *connections_manager, Connection *con
         fprintf(stderr, "[register_connection] register_socket failed");
         return -1;
     }
-    return 1;
+    return 0;
 }
 int deregister_connection(ConnectionsManager *connections_manager, Connection *connection)
 {
+    int status;
     HASH_DEL(connections_manager->connections, connection);
-    deregister_socket(connections_manager->epoll_fd, connection->socket_fd);
-    cleanup_connection(connection);
-    return 1;
+    status = deregister_socket(connections_manager->epoll_fd, connection->socket_fd);
+    if (status == -1)
+    {
+        fprintf(stderr, "[deregister_connection] deregister_socket failed");
+        return -1;
+    }
+    status = cleanup_connection(connection);
+    if (status == -1)
+    {
+        fprintf(stderr, "[deregister_connection] cleanup_connection failed");
+        return -1;
+    }
+    return 0;
 }
 int cleanup_connection(Connection *connection)
 {
@@ -30,7 +54,7 @@ int cleanup_connection(Connection *connection)
     if (status == -1)
         return -1;
     free(connection->tcp_client);
-    return 1;
+    return 0;
 }
 int cleanup_connections_manager(ConnectionsManager *connections_manager)
 {

@@ -20,7 +20,6 @@ void event_loop_run(ConnectionsManager *connections_manager)
                 NOTE:For testing purposes I'll check the socket type;
                 NOTE:Should only dispatched the connection's handler
             */
-            printf("Ready socket:%d\n", connection->socket_fd);
             if (connection->socket_fd == connections_manager->listening_socket)
             {
                 // Listening socket handler will add connected sockets
@@ -32,7 +31,7 @@ void event_loop_run(ConnectionsManager *connections_manager)
                 printf("Client socket\n");
                 // A connected client
                 int total_bytes_sent;
-                char *mock_message = "Message";
+                char *mock_message = "Message\n";
 
                 int bytes_sent = send(connection->socket_fd, mock_message, sizeof(mock_message), 0);
                 total_bytes_sent += bytes_sent;
