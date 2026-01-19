@@ -32,7 +32,7 @@ void event_loop_run(ConnectionsManager *connections_manager)
                 printf("Client socket\n");
                 // A connected client
                 int total_bytes_sent;
-                char *mock_message = "The server recieved the message";
+                char *mock_message = "Message";
 
                 int bytes_sent = send(connection->socket_fd, mock_message, sizeof(mock_message), 0);
                 total_bytes_sent += bytes_sent;
