@@ -75,23 +75,23 @@ TCPClient *tcp_listener_accept(int listening_socket)
     tcp_client->socket_fd = socket_fd;
     return tcp_client;
 }
-int listening_socket_handler(void *ctx)
+void listening_socket_handler(void *ctx)
 {
     int status;
     ConnectionsManager *connections_manager = (ConnectionsManager *)ctx;
     TCPClient *tcp_client = tcp_listener_accept(connections_manager->listening_socket);
     if (tcp_client == NULL)
-        return -1;
+        return;
     Connection *connection = malloc(sizeof(Connection));
     memset(connection, 0, sizeof(Connection));
     connection->tcp_client = tcp_client;
     gettimeofday(&connection->last_connection_time, NULL);
-    status = register_connection(connections_manager, connection, tcp_client->socket_fd);
+    status = register_connection(connections_manager, connection, tcp_client->socket_fd, NULL);
     if (status == -1)
     {
         free(tcp_client);
         fprintf(stderr, "[listening_socket_handler] register_connection failed\n");
-        return -1;
+        return;
     }
-    return 1;
+    return;
 }

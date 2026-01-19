@@ -1,10 +1,12 @@
 #include "connections/manager.h"
-int register_connection(ConnectionsManager *connections_manager, Connection *connection, int socket_fd)
+int register_connection(ConnectionsManager *connections_manager, Connection *connection, int socket_fd, void (*handler)(void *ctx))
 {
     int status;
     if (connections_manager == NULL || connection == NULL)
         return -1;
-
+    // Set socket values
+    connection->socket_fd = socket_fd;
+    connection->handler = handler;
     HASH_ADD_INT(connections_manager->connections, socket_fd, connection);
     status = register_socket(connections_manager->epoll_fd, socket_fd, EPOLLIN);
     if (status == -1)

@@ -13,10 +13,11 @@
  *
  * @param connections_manager Pointer to the ConnectionsManager instance
  * @param connection Pointer to the Connection to register
+ * @param socket_fd socket that belongs to the connection
+ * @param handler a function that's going to be dispatched in the event loop
  * @return 1 on success, -1 on failure (null parameters or socket registration error)
  */
-int register_connection(ConnectionsManager *connections_manager, Connection *connection, int socket_fd);
-
+int register_connection(ConnectionsManager *connections_manager, Connection *connection, int socket_fd, void (*handler)(void *ctx));
 /**
  * @brief Deregisters and cleans up a connection
  *
