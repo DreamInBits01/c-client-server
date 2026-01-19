@@ -1,6 +1,7 @@
 #include "events/event_loop.h"
 void event_loop_run(ConnectionsManager *connections_manager)
 {
+    printf("Event loop is running...\n");
     int ready_events;
     while (1)
     {
@@ -30,7 +31,7 @@ void event_loop_run(ConnectionsManager *connections_manager)
             {
                 printf("Client socket\n");
                 // A connected client
-                int total_bytes_sent;
+                int total_bytes_sent = 0;
                 char *mock_message = "Message\n";
 
                 int bytes_sent = send(connection->socket_fd, mock_message, sizeof(mock_message), 0);

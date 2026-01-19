@@ -4,12 +4,11 @@
 #include "net/listener.h"
 int main()
 {
-    printf("Hello world\n");
     ConnectionsManager connections_manager = {0};
 
     // Initialize connection manager
     initialize_connections_manager(&connections_manager);
-    // Register a listening socket
+    // Register a connection for the listening socket
     Connection connection = {0};
     register_connection(
         &connections_manager,
@@ -17,7 +16,7 @@ int main()
         connections_manager.listening_socket,
         listening_socket_handler);
 
-    // Run event loop
+    // Run event loop with the connection's manager
     event_loop_run(&connections_manager);
     return 0;
 }

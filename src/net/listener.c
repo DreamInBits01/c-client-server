@@ -3,7 +3,7 @@
 int tcp_listener_bind(char *host, char *port)
 {
     // To check the status at each procedure
-    printf("Host:%s", host);
+    printf("Host:%s\n", host);
     int status;
     struct addrinfo hints, *response;
     memset(&hints, 0, sizeof(hints));
