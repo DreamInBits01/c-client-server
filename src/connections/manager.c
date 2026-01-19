@@ -4,7 +4,7 @@ int initialize_connections_manager(ConnectionsManager *connections_manager)
     int status;
     int listening_socket = tcp_listener_bind("", "5050");
     connections_manager->listening_socket = listening_socket;
-    status = init_multiplexer(&connections_manager);
+    status = init_multiplexer(connections_manager);
     if (status == -1)
     {
         fprintf(stderr, "[initialize_connections_manager] init_multiplexer failed");

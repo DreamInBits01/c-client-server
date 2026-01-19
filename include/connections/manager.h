@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include "structs.h"
 #include "multiplexer.h"
+#include "net/listener.h"
 #include <uthash/src/uthash.h>
 /**
  * @brief Registers a new connection with the connections manager
@@ -52,4 +53,6 @@ int cleanup_connection(Connection *connection);
  * @return 1 on success
  */
 int cleanup_connections_manager(ConnectionsManager *connections_manager);
+int initialize_connections_manager(ConnectionsManager *connections_manager);
+
 #endif
