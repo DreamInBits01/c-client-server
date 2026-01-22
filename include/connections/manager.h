@@ -7,52 +7,70 @@
 #include "net/listener.h"
 #include <uthash/src/uthash.h>
 /**
- * @brief Registers a new connection with the connections manager
+ * Initializes a new ConnectionsManager instance.
+ *
+ * Creates a TCP listening socket on port 5050, allocates the manager structure,
+ * and initializes the event multiplexer (epoll). Exits on failure.
+ *
+ * @return Pointer to the newly created ConnectionsManager
+ */
+ConnectionsManager *initialize_connections_manager();
+
+/**
+ * Initializes a new Connection object.
+ *
+ * Allocates and zeroes a Connection structure, setting the socket descriptor,
+ * TCP client, handler function, and current timestamp. Exits on malloc failure.
+ *
+ * @param socket_fd File descriptor of the connection socket
+ * @param tcp_client Pointer to the TCPClient associated with this connection
+ * @param handler Callback function to handle events for this connection
+ * @return Pointer to the newly created Connection
+ */
+Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(void *ctx));
+
+/**
+ * Registers a connection with the connections manager.
  *
  * Adds the connection to the manager's hash table and registers its socket
- * with the epoll instance for monitoring incoming data (EPOLLIN events).
+ * with epoll for incoming events (EPOLLIN).
  *
  * @param connections_manager Pointer to the ConnectionsManager instance
  * @param connection Pointer to the Connection to register
- * @param socket_fd socket that belongs to the connection
- * @param handler a function that's going to be dispatched in the event loop
- * @return 1 on success, -1 on failure (null parameters or socket registration error)
+ * @return 0 on success, -1 on failure
  */
-int register_connection(ConnectionsManager *connections_manager, Connection *connection, int socket_fd, void (*handler)(void *ctx));
+int register_connection(ConnectionsManager *connections_manager, Connection *connection);
+
 /**
- * @brief Deregisters and cleans up a connection
+ * Deregisters and cleans up a connection.
  *
  * Removes the connection from the manager's hash table, deregisters its socket
- * from epoll, closes the socket, and frees associated resources.
+ * from epoll, and performs cleanup (closes socket, frees resources).
  *
- * @param connections_manager Pointer to the ConnectionsManager containing the connection
+ * @param connections_manager Pointer to the ConnectionsManager instance
  * @param connection Pointer to the Connection to deregister
- * @return 1 on success
+ * @return 0 on success, -1 on failure
  */
 int deregister_connection(ConnectionsManager *connections_manager, Connection *connection);
 
 /**
- * @brief Cleans up resources associated with a single connection
+ * Cleans up a connection's resources.
  *
- * Closes the connection's socket file descriptor and frees the tcp_client structure.
- * Does not free the Connection structure itself.
+ * Closes the connection's socket and frees the associated TCP client.
  *
  * @param connection Pointer to the Connection to clean up
- * @return 1 on success, -1 if closing the socket fails
+ * @return 0 on success, -1 on failure
  */
 int cleanup_connection(Connection *connection);
 
 /**
- * @brief Destroys the connections manager and all registered connections
+ * Cleans up the connections manager and all its connections.
  *
- * Performs complete cleanup by destroying the epoll multiplexer, iterating through
- * all connections to clean them up, and freeing the ConnectionsManager structure.
- * Should be called during application shutdown.
+ * Destroys the epoll multiplexer, iterates through all registered connections
+ * to clean them up, and frees the manager structure.
  *
- * @param connections_manager Pointer to the ConnectionsManager to destroy
+ * @param connections_manager Pointer to the ConnectionsManager to clean up
  * @return 1 on success
  */
 int cleanup_connections_manager(ConnectionsManager *connections_manager);
-int initialize_connections_manager(ConnectionsManager *connections_manager);
-
 #endif

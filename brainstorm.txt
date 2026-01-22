@@ -1,0 +1,4 @@
+#Socket connection handler
+-accepts new connections
+-creates a connection
+-adds a handler for the connection to be distpached

@@ -65,6 +65,7 @@ TCPClient *tcp_listener_accept(int listening_socket)
         fprintf(stderr, "[tcp_listener_accept] error: %s\n", strerror(errno));
         return NULL;
     }
+    // Make socket non-blocking
     int status = make_socket_nonblocking(socket_fd);
     if (status == -1)
     {
@@ -82,21 +83,22 @@ void listening_socket_handler(void *ctx)
     TCPClient *tcp_client = tcp_listener_accept(connections_manager->listening_socket);
     if (tcp_client == NULL)
         return;
-    Connection *connection = malloc(sizeof(Connection));
-    memset(connection, 0, sizeof(Connection));
-    connection->tcp_client = tcp_client;
-    gettimeofday(&connection->last_connection_time, NULL);
     /*
         -Should attach a handler to the clients sockets
         -The handler should distrbute the workload to the workers
         -Workers should parse each request and handle the client
     */
-    status = register_connection(connections_manager, connection, tcp_client->socket_fd, NULL);
-    if (status == -1)
+    Connection *connection = initialize_connection(tcp_client->socket_fd, tcp_client, NULL);
+    if (connection == NULL)
     {
         free(tcp_client);
         fprintf(stderr, "[listening_socket_handler] register_connection failed\n");
         return;
+    }
+    status = register_connection(connections_manager, connection);
+    if (status == -1)
+    {
+        free(connection);
     }
     return;
 }

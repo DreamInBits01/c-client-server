@@ -1,29 +1,56 @@
 #include "connections/manager.h"
-int initialize_connections_manager(ConnectionsManager *connections_manager)
+ConnectionsManager *initialize_connections_manager()
 {
     int status;
     int listening_socket = tcp_listener_bind("", "5050");
+    if (listening_socket == -1)
+    {
+        fprintf(stderr, "[initialize_connections_manager] tcp_listener_bind failed\n");
+        return NULL;
+    }
+    ConnectionsManager *connections_manager = malloc(sizeof(ConnectionsManager));
+    if (connections_manager == NULL)
+    {
+        fprintf(stderr, "[initialize_connections_manager] malloc failed");
+        return NULL;
+    }
     connections_manager->listening_socket = listening_socket;
     status = init_multiplexer(connections_manager);
     if (status == -1)
     {
+        free(connections_manager);
         fprintf(stderr, "[initialize_connections_manager] init_multiplexer failed");
-        exit(EXIT_FAILURE);
+        return NULL;
     }
-    return 0;
+    return connections_manager;
 }
-int register_connection(ConnectionsManager *connections_manager, Connection *connection, int socket_fd, void (*handler)(void *ctx))
+Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(void *ctx))
 {
-    int status;
-    if (connections_manager == NULL || connection == NULL)
-        return -1;
-    // Set socket values
+    Connection *connection = malloc(sizeof(Connection));
+    if (connection == NULL)
+    {
+        fprintf(stderr, "[initialize_connection] malloc failed");
+        return NULL;
+    }
+    memset(connection, 0, sizeof(Connection));
+    // SET VALUES
+    connection->tcp_client = tcp_client;
     connection->socket_fd = socket_fd;
     connection->handler = handler;
+    gettimeofday(&connection->last_connection_time, NULL);
+    return connection;
+}
+int register_connection(ConnectionsManager *connections_manager, Connection *connection)
+{
+    if (connections_manager == NULL || connection == NULL)
+        return -1;
+    int status;
+    // Add
     HASH_ADD_INT(connections_manager->connections, socket_fd, connection);
-    status = register_socket(connections_manager->epoll_fd, socket_fd, EPOLLIN);
+    status = register_socket(connections_manager->epoll_fd, connection->socket_fd, EPOLLIN);
     if (status == -1)
     {
+        HASH_DEL(connections_manager->connections, connection);
         fprintf(stderr, "[register_connection] register_socket failed");
         return -1;
     }
@@ -49,11 +76,17 @@ int deregister_connection(ConnectionsManager *connections_manager, Connection *c
 }
 int cleanup_connection(Connection *connection)
 {
+    if (connection == NULL)
+        return -1;
     int status;
     status = close(connection->socket_fd);
     if (status == -1)
         return -1;
-    free(connection->tcp_client);
+    if (connection->tcp_client)
+    {
+        free(connection->tcp_client);
+    }
+    free(connection);
     return 0;
 }
 int cleanup_connections_manager(ConnectionsManager *connections_manager)
@@ -69,5 +102,5 @@ int cleanup_connections_manager(ConnectionsManager *connections_manager)
         cleanup_connection(current_connection);                         /* free connection  */
     }
     free(connections_manager);
-    return 1;
+    return 0;
 }

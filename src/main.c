@@ -4,19 +4,22 @@
 #include "net/listener.h"
 int main()
 {
-    ConnectionsManager connections_manager = {0};
-
-    // Initialize connection manager
-    initialize_connections_manager(&connections_manager);
+    // Initialize a connections manager
+    ConnectionsManager *connections_manager = initialize_connections_manager();
+    // Initialize a conneection
+    Connection *connection = initialize_connection(connections_manager->listening_socket, NULL, listening_socket_handler);
+    if (connection == NULL)
+    {
+        fprintf(stderr, "[main]: initialize_connection failed");
+        return EXIT_FAILURE;
+    }
     // Register a connection for the listening socket
-    Connection connection = {0};
-    register_connection(
-        &connections_manager,
-        &connection,
-        connections_manager.listening_socket,
-        listening_socket_handler);
-
+    if (register_connection(connections_manager, connection) == -1)
+    {
+        fprintf(stderr, "[main]: register_connection failed");
+        return EXIT_FAILURE;
+    }
     // Run event loop with the connection's manager
-    event_loop_run(&connections_manager);
+    event_loop_run(connections_manager);
     return 0;
 }

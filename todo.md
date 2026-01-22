@@ -4,8 +4,9 @@
   - Implement an initialization in connections/managers
 - [net]:
   - Implement non-blocking sockets in the listener. DONE.
-  - implement listening_socket_handler
+  - implement listening_socket_handler. DONE
 - [event_loop]:
   - takes a connections manager
   - epoll_wait
   - dispatches events
+- [workers]:
