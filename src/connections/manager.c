@@ -14,6 +14,7 @@ ConnectionsManager *initialize_connections_manager()
         fprintf(stderr, "[initialize_connections_manager] malloc failed");
         return NULL;
     }
+    memset(connections_manager, 0, sizeof(ConnectionsManager));
     connections_manager->listening_socket = listening_socket;
     status = init_multiplexer(connections_manager);
     if (status == -1)

@@ -6,6 +6,11 @@ int main()
 {
     // Initialize a connections manager
     ConnectionsManager *connections_manager = initialize_connections_manager();
+    if (connections_manager == NULL)
+    {
+        fprintf(stderr, "[main]: initialize_connections_manager failed");
+        return EXIT_FAILURE;
+    }
     // Initialize a conneection
     Connection *connection = initialize_connection(connections_manager->listening_socket, NULL, listening_socket_handler);
     if (connection == NULL)
