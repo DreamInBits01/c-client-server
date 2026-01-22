@@ -61,5 +61,5 @@ TCPClient *tcp_listener_accept(int listening_socket);
  * @note Allocates memory for Connection structure; freed during connection cleanup
  * @note Sets connection's last_connection_time to current time
  */
-void listening_socket_handler(void *ctx);
+void listening_socket_handler(Connection *connection);
 #endif

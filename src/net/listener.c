@@ -76,10 +76,10 @@ TCPClient *tcp_listener_accept(int listening_socket)
     tcp_client->socket_fd = socket_fd;
     return tcp_client;
 }
-void listening_socket_handler(void *ctx)
+void listening_socket_handler(Connection *connection)
 {
+    ConnectionsManager *connections_manager = (ConnectionsManager *)connection->handler_context;
     int status;
-    ConnectionsManager *connections_manager = (ConnectionsManager *)ctx;
     TCPClient *tcp_client = tcp_listener_accept(connections_manager->listening_socket);
     if (tcp_client == NULL)
         return;
@@ -88,17 +88,17 @@ void listening_socket_handler(void *ctx)
         -The handler should distrbute the workload to the workers
         -Workers should parse each request and handle the client
     */
-    Connection *connection = initialize_connection(tcp_client->socket_fd, tcp_client, NULL);
-    if (connection == NULL)
+    Connection *new_connection = initialize_connection(tcp_client->socket_fd, tcp_client, NULL, NULL);
+    if (new_connection == NULL)
     {
         free(tcp_client);
         fprintf(stderr, "[listening_socket_handler] register_connection failed\n");
         return;
     }
-    status = register_connection(connections_manager, connection);
+    status = register_connection(connections_manager, new_connection);
     if (status == -1)
     {
-        free(connection);
+        free(new_connection);
     }
     return;
 }

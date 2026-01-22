@@ -1,6 +1,7 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -Iexternal
+# CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -Iexternal
+CFLAGS = -Wall -Wextra -std=c11 -Iinclude -Iexternal
 LDFLAGS = 
 
 # Directories

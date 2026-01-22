@@ -31,16 +31,20 @@ typedef struct
     After a period of time of their last connection,
     the client will be removed from the monitored events achieve presestience connection
 */
-typedef struct
+typedef struct Connection
 {
     struct epoll_event event;
     TCPClient *tcp_client;
     int socket_fd;
     struct timeval last_connection_time;
-    void (*handler)(void *ctx);
     ConnectionState state;
+
     RequestBuffer request;
     ResponseBuffer response;
+
+    // Handler and its context
+    void (*handler)(struct Connection *);
+    void *handler_context;
     UT_hash_handle hh; /* makes this structure hashable */
 } Connection;
 /*

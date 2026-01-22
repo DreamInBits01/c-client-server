@@ -2,3 +2,12 @@
 -accepts new connections
 -creates a connection
 -adds a handler for the connection to be distpached
+
+#Workers 
+-Pool should contain logic about threads pool 
+-Worker should be the function used by the threads 
+
+#Connections manager 
+-Should use API provided by the workers to use the pool 
+-Should store a refrence to a pool 
+-Should provide the pool to clients for disptaching 

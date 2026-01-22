@@ -25,7 +25,7 @@ ConnectionsManager *initialize_connections_manager()
     }
     return connections_manager;
 }
-Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(void *ctx))
+Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(Connection *), void *handler_context)
 {
     Connection *connection = malloc(sizeof(Connection));
     if (connection == NULL)
@@ -35,6 +35,7 @@ Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*h
     }
     memset(connection, 0, sizeof(Connection));
     // SET VALUES
+    connection->handler_context = handler_context;
     connection->tcp_client = tcp_client;
     connection->socket_fd = socket_fd;
     connection->handler = handler;

@@ -12,7 +12,10 @@ int main()
         return EXIT_FAILURE;
     }
     // Initialize a conneection
-    Connection *connection = initialize_connection(connections_manager->listening_socket, NULL, listening_socket_handler);
+    Connection *connection = initialize_connection(
+        connections_manager->listening_socket,
+        NULL,
+        listening_socket_handler, connections_manager);
     if (connection == NULL)
     {
         fprintf(stderr, "[main]: initialize_connection failed");
