@@ -24,6 +24,7 @@ typedef struct
 typedef struct
 {
     size_t request_bytes_received;
+    time_t request_start_time;
     char data[REQUEST_BUFFER_SIZE];
 } RequestBuffer;
 /*

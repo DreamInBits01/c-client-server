@@ -35,9 +35,9 @@ Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*h
     }
     memset(connection, 0, sizeof(Connection));
     // SET VALUES
-    connection->handler_context = handler_context;
     connection->tcp_client = tcp_client;
     connection->socket_fd = socket_fd;
+    connection->handler_context = handler_context;
     connection->handler = handler;
     gettimeofday(&connection->last_connection_time, NULL);
     return connection;
@@ -48,26 +48,25 @@ int register_connection(ConnectionsManager *connections_manager, Connection *con
         return -1;
     int status;
     // Add
-    HASH_ADD_INT(connections_manager->connections, socket_fd, connection);
     status = register_socket(connections_manager->epoll_fd, connection->socket_fd, EPOLLIN);
     if (status == -1)
     {
-        HASH_DEL(connections_manager->connections, connection);
         fprintf(stderr, "[register_connection] register_socket failed");
         return -1;
     }
+    HASH_ADD_INT(connections_manager->connections, socket_fd, connection);
     return 0;
 }
 int deregister_connection(ConnectionsManager *connections_manager, Connection *connection)
 {
     int status;
-    HASH_DEL(connections_manager->connections, connection);
     status = deregister_socket(connections_manager->epoll_fd, connection->socket_fd);
     if (status == -1)
     {
         fprintf(stderr, "[deregister_connection] deregister_socket failed");
         return -1;
     }
+    HASH_DEL(connections_manager->connections, connection);
     status = cleanup_connection(connection);
     if (status == -1)
     {

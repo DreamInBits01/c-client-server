@@ -1,12 +1,17 @@
-- [connections]:
-  - add response and request buffering to connections
-  - Implement connections manager crud. DONE.
-  - Implement an initialization in connections/managers
-- [net]:
-  - Implement non-blocking sockets in the listener. DONE.
-  - implement listening_socket_handler. DONE
-- [event_loop]:
-  - takes a connections manager
-  - epoll_wait
-  - dispatches events
-- [workers]:
+[Workers]
+-Create threads pool
+-Create a mock worker
+-Pool should contain logic about threads pool
+-Worker should be the function used by the threads
+
+[Connections manager]
+-Should use API provided by the workers to use the pool
+-Should store a refrence to a pool
+-Should provide the pool to clients for disptaching
+
+[Event loop]
+-Should handle timeouts
+-Should close connected sockets if there request_start time is above 10 seconds and their state is processing
+[IO]
+-Should handle partial reads
+-Should handle partial sends

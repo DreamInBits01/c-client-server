@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include "connections/structs.h"
 /**
  * @brief Configures a socket to operate in non-blocking mode
  *
@@ -17,4 +18,5 @@
  * @note After setting non-blocking mode, operations may return EAGAIN or EWOULDBLOCK
  */
 int make_socket_nonblocking(int socket_fd);
+int is_request_complete(Connection *connection);
 #endif

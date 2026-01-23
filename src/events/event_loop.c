@@ -2,6 +2,7 @@
 void event_loop_run(ConnectionsManager *connections_manager)
 {
     printf("Event loop is running...\n");
+    // time_t last_timeout_check = time(NULL);
     int ready_events;
     while (1)
     {

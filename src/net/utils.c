@@ -7,3 +7,9 @@ int make_socket_nonblocking(int socket_fd)
         return -1;
     return 0;
 }
+int is_request_complete(Connection *connection)
+{
+    // Just check for end of headers
+    // This works for requests that has no body
+    return strstr(connection->request.data, "\r\n\r\n") != NULL ? 0 : -1;
+}

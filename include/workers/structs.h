@@ -1,0 +1,4 @@
+#ifndef WORKERS_STRUCTS_H
+#define WORKERS_STRUCTS_H
+
+#endif

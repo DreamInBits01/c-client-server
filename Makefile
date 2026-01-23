@@ -21,6 +21,8 @@ SRCS = src/main.c \
        src/net/listener.c \
        src/net/utils.c \
        src/net/io.c \
+       src/workers/thread_pool.c \
+       src/workers/worker.c \
        src/events/event_loop.c 
 # Object files
 OBJS = $(SRCS:src/%.c=obj/%.o)
@@ -33,6 +35,9 @@ DEPS = include/connections/multiplexer.h \
        include/net/structs.h \
        include/net/utils.h \
        include/net/io.h \
+       include/workers/thread_pool.h \
+       include/workers/worker.h \
+       include/workers/structs.h \
        include/events/event_loop.h 
 
 # Default target
