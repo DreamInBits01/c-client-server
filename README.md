@@ -87,8 +87,8 @@ Aegis is built on a modular, layered architecture designed to separate low-level
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/aegis-http.git
-cd aegis-http
+git clone https://github.com/DreamInBits01/c-client-server.git
+cd c-client-server
 
 # Build the project
 make
@@ -98,8 +98,8 @@ make
 ### Running the Server
 
 ```bash
-# Start the server on a specific port (default 8080)
-./aegis --port 8080
+# Start the server on a specific port (for now hardcoded on 5050)
+make run
 
 ```
 
