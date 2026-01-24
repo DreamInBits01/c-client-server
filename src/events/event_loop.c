@@ -17,11 +17,9 @@ void event_loop_run(ConnectionsManager *connections_manager)
                 &connections_manager->events[i].data.fd,
                 connection);
             if (connection == NULL)
+            {
                 continue;
-            /*
-                NOTE:For testing purposes I'll check the socket type;
-                NOTE:Should only dispatched the connection's handler
-            */
+            }
             connection->handler(connection);
         }
     }

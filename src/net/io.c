@@ -16,7 +16,6 @@ int io_receive(Connection *connection)
                 // No more data available right now (non-blocking socket)
                 break;
             }
-
             fprintf(stderr, "[io_receive] error while recveiving from connection:%d: %s\n",
                     connection->socket_fd,
                     strerror(errno));

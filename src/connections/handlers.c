@@ -1,12 +1,16 @@
 #include "connections/handlers.h"
 void client_socket_handler(Connection *connection)
 {
+    /*
+        -Client handler should submit the connection to the thread pool (provided by connections manager)
+        -Submission function shuld worry about rotating the threads an distributing the load
+    */
     printf("Handling client %d...\n", connection->socket_fd);
     io_receive(connection);
     size_t total_bytes_sent = 0;
     while (1)
     {
-        int bytes_sent = send(connection->socket_fd, connection->request.data + total_bytes_sent, sizeof(connection->request.data) - total_bytes_sent, 0);
+        int bytes_sent = send(connection->socket_fd, connection->request.data + total_bytes_sent, strlen(connection->request.data) - total_bytes_sent, 0);
         if (bytes_sent == -1)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -26,8 +30,8 @@ void client_socket_handler(Connection *connection)
         {
             printf("Message was sent partially (%d bytes)\n", bytes_sent);
         }
-        close(connection->socket_fd);
     }
+    close(connection->socket_fd);
 }
 void listening_socket_handler(Connection *connection)
 {
@@ -47,11 +51,6 @@ void listening_socket_handler(Connection *connection)
         fprintf(stderr, "[listening_socket_handler] register_connection failed\n");
         return;
     }
-    /*
-        -Should attach a handler to the clients sockets
-        -The handler should distrbute the workload to the workers
-        -Workers should parse each request and handle the client
-    */
     Connection *new_connection = initialize_connection(tcp_client->socket_fd, tcp_client, client_socket_handler, connections_manager);
     if (new_connection == NULL)
     {

@@ -7,11 +7,12 @@
 [Connections manager]
 -Should use API provided by the workers to use the pool
 -Should store a refrence to a pool
--Should provide the pool to clients for disptaching
+-Should provide the pool to clients for disptaching (Via handler_context inside the connection)
 
 [Event loop]
 -Should handle timeouts
 -Should close connected sockets if there request_start time is above 10 seconds and their state is processing
+
 [IO]
 -Should handle partial reads
 -Should handle partial sends
