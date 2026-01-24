@@ -1,4 +1,4 @@
-# Aegis: High-Performance Event-Driven HTTP Server
+# Event-Driven HTTP Server
 
 A from-scratch, educational implementation of the HTTP/1.1 protocol using C, raw TCP sockets, and the Reactor pattern.
 
