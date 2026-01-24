@@ -17,6 +17,7 @@ TARGET = $(BIN_DIR)/server
 # Source files
 SRCS = src/main.c \
        src/connections/manager.c \
+       src/connections/handlers.c \
        src/connections/multiplexer.c \
        src/net/listener.c \
        src/net/utils.c \
@@ -31,6 +32,7 @@ OBJS = $(SRCS:src/%.c=obj/%.o)
 DEPS = include/connections/multiplexer.h \
        include/connections/manager.h \
        include/connections/structs.h \
+       include/connections/handlers.h \
        include/net/listener.h \
        include/net/structs.h \
        include/net/utils.h \
