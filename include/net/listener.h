@@ -15,6 +15,7 @@
 #include "structs.h"
 #include "utils.h"
 #include "connections/manager.h"
+#include "io.h"
 #define BACKLOG 20
 /**
  * @brief Creates, binds, and configures a TCP listening socket
@@ -62,4 +63,5 @@ TCPClient *tcp_listener_accept(int listening_socket);
  * @note Sets connection's last_connection_time to current time
  */
 void listening_socket_handler(Connection *connection);
+void client_socket_handle(Connection *connection);
 #endif

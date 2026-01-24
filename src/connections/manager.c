@@ -37,8 +37,10 @@ Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*h
     // SET VALUES
     connection->tcp_client = tcp_client;
     connection->socket_fd = socket_fd;
-    connection->handler_context = handler_context;
+    connection->handler_context = (void *)handler_context;
     connection->handler = handler;
+    connection->request.data[0] = '\0';
+    connection->response.data[0] = '\0';
     gettimeofday(&connection->last_connection_time, NULL);
     return connection;
 }

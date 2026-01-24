@@ -76,19 +76,53 @@ TCPClient *tcp_listener_accept(int listening_socket)
     tcp_client->socket_fd = socket_fd;
     return tcp_client;
 }
+/*
+client_socket_handle Should be implemented else where and imorted here
+*/
+void client_socket_handle(Connection *connection)
+{
+    printf("Handling client %d...\n", connection->socket_fd);
+    io_receive(connection);
+    int total_btes_sent = 0;
+    int bytes_sent = send(connection->socket_fd, connection->request.data, sizeof(connection->request.data), 0);
+    if (bytes_sent == -1)
+    {
+        printf("Error while sending message\n");
+    }
+    else if (bytes_sent == sizeof(connection->request.data))
+    {
+        printf("Message was sent completely\n");
+    }
+    else
+    {
+        printf("Message was sent partially (%d bytes)\n", bytes_sent);
+    }
+    close(connection->socket_fd);
+}
 void listening_socket_handler(Connection *connection)
 {
+    if (connection == NULL)
+    {
+        fprintf(stderr, "[listening_socket_handler] need connection\n");
+    }
     ConnectionsManager *connections_manager = (ConnectionsManager *)connection->handler_context;
+    if (connections_manager == NULL)
+    {
+        fprintf(stderr, "[listening_socket_handler] need handler context\n");
+    }
     int status;
     TCPClient *tcp_client = tcp_listener_accept(connections_manager->listening_socket);
     if (tcp_client == NULL)
+    {
+        fprintf(stderr, "[listening_socket_handler] register_connection failed\n");
         return;
+    }
     /*
         -Should attach a handler to the clients sockets
         -The handler should distrbute the workload to the workers
         -Workers should parse each request and handle the client
     */
-    Connection *new_connection = initialize_connection(tcp_client->socket_fd, tcp_client, NULL, NULL);
+    Connection *new_connection = initialize_connection(tcp_client->socket_fd, tcp_client, client_socket_handle, connections_manager);
     if (new_connection == NULL)
     {
         free(tcp_client);

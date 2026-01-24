@@ -17,13 +17,13 @@ typedef enum
 } ConnectionState;
 typedef struct
 {
-    size_t total_bytes; // Total response prepared
-    size_t bytes_sent;  // Total bytes sent
+    size_t bytes_prepared; // Total response prepared
+    size_t bytes_sent;     // Total bytes sent
     char data[RESPONSE_BUFFER_SIZE];
 } ResponseBuffer;
 typedef struct
 {
-    size_t request_bytes_received;
+    size_t bytes_received;
     time_t request_start_time;
     char data[REQUEST_BUFFER_SIZE];
 } RequestBuffer;

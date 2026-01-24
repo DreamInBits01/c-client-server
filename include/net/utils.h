@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef NET_UTILS_H
+#define NET_UTILS_H
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -18,5 +18,5 @@
  * @note After setting non-blocking mode, operations may return EAGAIN or EWOULDBLOCK
  */
 int make_socket_nonblocking(int socket_fd);
-int is_request_complete(Connection *connection);
+int is_request_completed(Connection *connection);
 #endif
