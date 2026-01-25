@@ -107,7 +107,7 @@ make run
 
 ## Configuration
 
-Core system limits and buffer sizes are defined in `include/config.h` (or similar). Modifying these requires a re-compile.
+
 
 | Constant       | Value | Description                                      |
 | -------------- | ----- | ------------------------------------------------ |
