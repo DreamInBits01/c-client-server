@@ -5,31 +5,29 @@ void client_socket_handler(Connection *connection)
         -Client handler should submit the connection to the thread pool (provided by connections manager)
         -Submission function shuld worry about rotating the threads an distributing the load
     */
+    int status = 0;
     printf("Handling client %d...\n", connection->socket_fd);
-    io_receive(connection);
-    size_t total_bytes_sent = 0;
-    while (1)
+    status = io_receive(connection);
+    if (status == -1)
     {
-        int bytes_sent = send(connection->socket_fd, connection->request.data + total_bytes_sent, strlen(connection->request.data) - total_bytes_sent, 0);
-        if (bytes_sent == -1)
-        {
-            if (errno == EAGAIN || errno == EWOULDBLOCK)
-            {
-                // No more data available right now (non-blocking socket)
-                break;
-            }
-            printf("Error while sending message\n");
-        }
-        total_bytes_sent += bytes_sent;
-        if (total_bytes_sent == connection->request.bytes_received)
-        {
-            printf("Message was sent completely\n");
-            break;
-        }
-        else
-        {
-            printf("Message was sent partially (%d bytes)\n", bytes_sent);
-        }
+        printf("Error while receiving data\n");
+    }
+    else
+    {
+        printf("Data was received completely\n");
+    }
+    // Copying data from request to response
+    memcpy(connection->response.data, connection->request.data, sizeof(connection->request.data));
+    connection->response.bytes_prepared = strlen(connection->response.data);
+    // Echo request to the client
+    status = io_send(connection);
+    if (status == -1)
+    {
+        printf("Error while sending data\n");
+    }
+    else
+    {
+        printf("Data was sent completely\n");
     }
     close(connection->socket_fd);
 }
