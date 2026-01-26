@@ -24,12 +24,13 @@ void client_socket_handler(Connection *connection)
     if (status == -1)
     {
         printf("Error while sending data\n");
+        deregister_connection(connection->handler_context, connection);
     }
     else
     {
         printf("Data was sent completely\n");
     }
-    close(connection->socket_fd);
+    deregister_connection(connection->handler_context, connection);
 }
 void listening_socket_handler(Connection *connection)
 {
