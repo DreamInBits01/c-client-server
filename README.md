@@ -41,7 +41,7 @@ This project serves as a practical exploration of systems programming and networ
 
 ## Architecture Deep Dive
 
-Aegis is built on a modular, layered architecture designed to separate low-level networking concerns from high-level protocol logic.
+The project is built on a modular, layered architecture designed to separate low-level networking concerns from high-level protocol logic.
 
 ### Module Responsibilities
 
