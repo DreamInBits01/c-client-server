@@ -107,7 +107,7 @@ make run
 
 ## Configuration
 
-Core system limits and buffer sizes are defined in `include/config.h` (or similar). Modifying these requires a re-compile.
+
 
 | Constant       | Value | Description                                      |
 | -------------- | ----- | ------------------------------------------------ |
@@ -127,7 +127,7 @@ The Reactor pattern is an event-handling pattern for handling service requests d
 
 In Aegis, sockets are set to `O_NONBLOCK`. This means `read` and `write` calls return immediately. If data isn't ready, the thread isn't "parked"; instead, it returns to the event loop to check other connections, maximizing throughput.
 
-### Epoll (Edge-Triggered)
+### Epoll 
 
 Unlike `select` or `poll`, `epoll` is an operation regarding the number of monitored file descriptors. It scales efficiently to tens of thousands of connections, making it the standard for high-performance Linux networking.
 
