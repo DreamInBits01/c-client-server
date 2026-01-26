@@ -37,11 +37,13 @@ void listening_socket_handler(Connection *connection)
     if (connection == NULL)
     {
         fprintf(stderr, "[listening_socket_handler] need connection\n");
+        return;
     }
     ConnectionsManager *connections_manager = (ConnectionsManager *)connection->handler_context;
     if (connections_manager == NULL)
     {
         fprintf(stderr, "[listening_socket_handler] need handler context\n");
+        return;
     }
     int status;
     TCPClient *tcp_client = tcp_listener_accept(connections_manager->listening_socket);

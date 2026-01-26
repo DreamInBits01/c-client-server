@@ -76,6 +76,3 @@ TCPClient *tcp_listener_accept(int listening_socket)
     tcp_client->socket_fd = socket_fd;
     return tcp_client;
 }
-/*
-client_socket_handle Should be implemented else where and imorted here
-*/
