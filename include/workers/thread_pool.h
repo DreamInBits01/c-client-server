@@ -1,7 +1,8 @@
 #ifndef THREAD_POOL_H
 #define THREAD_POOL_H
+#include "structs.h"
 
-int init_threadpool();
+ThreadPool *init_threadpool();
 int destroy_threadpool();
 int submit_to_threadpool();
 #endif
