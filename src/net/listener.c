@@ -57,8 +57,10 @@ int tcp_listener_bind(char *host, char *port)
 }
 TCPClient *tcp_listener_accept(int listening_socket)
 {
+    // Create tcp_client
     TCPClient *tcp_client = malloc(sizeof(TCPClient));
     memset(tcp_client, 0, sizeof(TCPClient));
+    // Accept a new socket
     int socket_fd = accept(listening_socket, (struct sockaddr *)&tcp_client->client_information, &tcp_client->client_information_len);
     if (socket_fd == -1)
     {

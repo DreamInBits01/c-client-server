@@ -23,7 +23,7 @@ int io_receive(Connection *connection)
             memset(connection->request.data, 0, sizeof(connection->request.data));
             return -1;
         };
-        // CLIENT CLOSE CONNECTION
+        // Client closed connection
         if (bytes_received == 0)
         {
             fprintf(stderr, "[io_receive] client close connection:%d\n", connection->socket_fd);
@@ -31,7 +31,7 @@ int io_receive(Connection *connection)
             return -1; // Client closed connection
         };
         connection->request.bytes_received += bytes_received;
-        // CLIENT OVERFLOWED THE REQUEST BUFFER
+        // Client overflowed the request's buffer
         if (connection->request.bytes_received >= sizeof(connection->request.data))
         {
             fprintf(stderr, "[io_receive] buffer full, request too large\n");

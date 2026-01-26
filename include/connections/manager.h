@@ -60,7 +60,7 @@ int deregister_connection(ConnectionsManager *connections_manager, Connection *c
  * @param connection Pointer to the Connection to clean up
  * @return 0 on success, -1 on failure
  */
-int cleanup_connection(Connection *connection);
+int destroy_connection(Connection *connection);
 
 /**
  * Cleans up the connections manager and all its connections.
@@ -71,5 +71,5 @@ int cleanup_connection(Connection *connection);
  * @param connections_manager Pointer to the ConnectionsManager to clean up
  * @return 1 on success
  */
-int cleanup_connections_manager(ConnectionsManager *connections_manager);
+int destroy_connections_manager(ConnectionsManager *connections_manager);
 #endif
