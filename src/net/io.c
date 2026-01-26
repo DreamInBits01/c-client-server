@@ -51,6 +51,7 @@ int io_send(Connection *connection)
     while (1)
     {
         int bytes_sent = send(connection->socket_fd, connection->response.data + total_bytes_sent, strlen(connection->response.data) - total_bytes_sent, 0);
+        total_bytes_sent += bytes_sent;
         if (bytes_sent == -1)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -70,7 +71,6 @@ int io_send(Connection *connection)
             memset(connection->response.data, 0, sizeof(connection->response.data));
             return -1; // Client closed connection
         };
-        total_bytes_sent += bytes_sent;
         if (total_bytes_sent == connection->response.bytes_prepared)
         {
             // Message was sent completely

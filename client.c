@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
-#define RESPONSE_SIZE 256
+#define RESPONSE_SIZE 1024
 #define RESEND_ATTEMTS 4
 /*
 
@@ -19,6 +19,12 @@
 
 
 */
+int is_response_completed(char *buffer)
+{
+    // Just check for end of headers
+    // This works for requests that has no body
+    return strstr(buffer, "\r\n\r\n") != NULL ? 0 : -1;
+}
 int main(int ac, char **argv)
 {
     if (ac != 3)
@@ -51,49 +57,59 @@ int main(int ac, char **argv)
     }
     int message_length = strlen(argv[2]);
     int total_bytes_sent = 0;
-    int bytes_sent = send(socket_fd, argv[2], message_length, 0);
-    total_bytes_sent += bytes_sent;
-    if (total_bytes_sent == -1)
+    while (1)
     {
-        printf("Error while sending message\n");
-    }
-    else if (total_bytes_sent == message_length)
-    {
-        printf("Message was sent completely\n");
-    }
-    else
-    {
-        printf("Message was sent partially (%d bytes)\n", bytes_sent);
-        for (size_t i = 0; i < RESEND_ATTEMTS; i++)
+        int bytes_sent = send(socket_fd, argv[2] + total_bytes_sent, message_length - total_bytes_sent, 0);
+        total_bytes_sent += bytes_sent;
+        if (bytes_sent == -1)
         {
-            bytes_sent = send(socket_fd, argv[2] + total_bytes_sent, message_length, 0);
-            total_bytes_sent += bytes_sent;
+            printf("Error while sending message\n");
+            break;
         }
+        if (total_bytes_sent == message_length)
+        {
+            printf("Message was sent completely (%d bytes)\n", total_bytes_sent);
+            break;
+        }
+        // Retry
+        printf("Message was sent partially (%d bytes)\n", bytes_sent);
     }
-    int bytes_read = 1;
+
+    int bytes_received = 1;
+    int total_bytes_received = 0;
     char server_response[RESPONSE_SIZE];
     // Wait for a response via while
     while (1)
     {
-        bytes_read = recv(socket_fd, server_response, RESPONSE_SIZE, 0);
-        if (bytes_read == 0)
+        bytes_received = recv(socket_fd, server_response + total_bytes_received, RESPONSE_SIZE - total_bytes_received, 0);
+        total_bytes_received += bytes_received;
+        if (bytes_received == 0)
         {
             printf("Server closed connection\n");
             break;
         }
-        else if (bytes_read == -1)
+        if (bytes_received == -1)
         {
             printf("Error while receiving bytes\n");
             break;
         }
-        else
+        if (total_bytes_received >= sizeof(server_response))
         {
-            // Message got
-            server_response[bytes_read] = '\0';
-            printf("Received data:%s\n", server_response);
+            printf("Response buffer is full\n");
             break;
         }
+        if (is_response_completed(server_response) == 0)
+        {
+            printf("Received data:%s\n", server_response);
+            server_response[total_bytes_received] = '\0';
+            break;
+        }
+        else
+        {
+            printf("Received data partially:%d\n", total_bytes_received);
+        }
     }
+    printf("Received data:%s\n", server_response);
     printf("Closing socket\n");
     close(socket_fd);
     return 0;

@@ -3,4 +3,5 @@
 
 int init_threadpool();
 int destroy_threadpool();
+int submit_to_threadpool();
 #endif
