@@ -40,7 +40,6 @@ ThreadPool *initialize_threadpool()
     for (size_t i = 0; i < thread_pool->number_of_workers; i++)
     {
         pthread_create(&thread_pool->threads[i], NULL, mock_routine, thread_pool);
-        pthread_detach(thread_pool->threads[i]);
     };
     return thread_pool;
 };
@@ -57,8 +56,12 @@ int destroy_threadpool(ThreadPool *threadpool)
     // Wake all threads up
     pthread_cond_broadcast(&threadpool->queue->not_empty);
     pthread_mutex_unlock(&threadpool->queue->mutex);
-    // No need to join threads, they are detached
-    // Destroy queue after all the workers has stopped
+    // Wait for all workers to finish
+    for (size_t i = 0; i < threadpool->number_of_workers; i++)
+    {
+        pthread_join(threadpool->threads[i], NULL);
+    }
+    // Destroy queue after all the workers have stopped
     destroy_queue(threadpool->queue);
     free(threadpool->threads);
     free(threadpool);
