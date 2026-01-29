@@ -2,12 +2,12 @@
 
 RequestsQueue *initialize_queue(int number_of_workers)
 {
-    RequestsQueue *queue = malloc(sizeof(RequestBuffer));
+    RequestsQueue *queue = malloc(sizeof(RequestsQueue));
     if (queue == NULL)
     {
         return NULL;
     };
-    memset(queue, 0, sizeof(queue));
+    memset(queue, 0, sizeof(RequestsQueue));
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->not_empty, NULL);
     pthread_cond_init(&queue->not_full, NULL);
