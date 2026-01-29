@@ -35,8 +35,8 @@ typedef struct RequestsQueue
 typedef struct
 {
     pthread_t *threads;
-    size_t number_of_workers;
     RequestsQueue *queue;
+    size_t number_of_workers;
     volatile int shutdown;
     volatile int active_workers;
 } ThreadPool;

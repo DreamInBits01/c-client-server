@@ -1,6 +1,6 @@
 #include "workers/queue.h"
 
-RequestsQueue *init_queue(int number_of_workers)
+RequestsQueue *initialize_queue(int number_of_workers)
 {
     RequestsQueue *queue = malloc(sizeof(RequestBuffer));
     if (queue == NULL)
@@ -93,4 +93,5 @@ int destroy_queue(RequestsQueue *queue)
         free(element);
     }
     free(queue);
+    return 0;
 }
