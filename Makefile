@@ -24,6 +24,7 @@ SRCS = src/main.c \
        src/net/io.c \
        src/workers/thread_pool.c \
        src/workers/worker.c \
+       src/workers/queue.c \
        src/events/event_loop.c 
 # Object files
 OBJS = $(SRCS:src/%.c=obj/%.o)
@@ -39,6 +40,7 @@ DEPS = include/connections/multiplexer.h \
        include/net/io.h \
        include/workers/thread_pool.h \
        include/workers/worker.h \
+       include/workers/queue.h \
        include/workers/structs.h \
        include/events/event_loop.h 
 

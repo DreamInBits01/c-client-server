@@ -1,24 +1,42 @@
 #ifndef WORKERS_STRUCTS_H
 #define WORKERS_STRUCTS_H
-#include "connections/structs.h"
+#include <unistd.h>
 #include <pthread.h>
-#define NUMBER_OF_WORKERS 5
+#include "connections/structs.h"
 
-// typedef struct
-// {
-//     pthread_t thread_id;
+/*
+Number of workers is the number of cors + 1 on the system
+*/
+/*
+-if the queue is not empty, workers will consume untill the queue becomes empty.
+If the queue is empty, workers will be stopped.
 
-// } Worker;
+-if the queue is not full, the submitting function (producer) will keep working.
+If the queue is full, the producer will stop
+-
+*/
+
+typedef struct Request
+{
+    Connection *connection;
+    struct Request *prev; /* needed for a doubly-linked list only */
+    struct Request *next; /* needed for singly- or doubly-linked lists */
+} Request;
+typedef struct RequestsQueue
+{
+    Request *requests;
+    // Number of workers * 10
+    size_t queue_capacity;
+    size_t used_capacity;
+    pthread_mutex_t mutex;
+    pthread_cond_t not_empty;
+    pthread_cond_t not_full;
+} RequestsQueue;
 typedef struct
 {
-    pthread_t threads[NUMBER_OF_WORKERS];
-    int number_of_workers;
-
-    // Queue implementation should be thread-safe
-    // Queue should provide a count function to be used in the condition
-    pthread_cond_t work_available;
-    pthread_cond_t queue_empty;
-
+    pthread_t *threads;
+    size_t number_of_workers;
+    RequestsQueue *queue;
     volatile int shutdown;
     volatile int active_workers;
 } ThreadPool;

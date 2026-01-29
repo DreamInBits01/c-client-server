@@ -29,7 +29,6 @@ int main()
         fprintf(stderr, "[main]: register_connection failed");
         return EXIT_FAILURE;
     }
-    printf("Connection context:%d\n", ((ConnectionsManager *)connection->handler_context)->listening_socket);
     // Run event loop with the connection's manager
     event_loop_run(connections_manager);
     destroy_connections_manager(connections_manager);
