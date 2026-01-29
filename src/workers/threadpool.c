@@ -1,16 +1,5 @@
 #include "workers/threadpool.h"
-void mock_routine(void *args)
-{
-    ThreadPool *threadpool = (ThreadPool *)args;
-    while (threadpool->shutdown != 1)
-    {
-        Connection *connection = dequeue_request(threadpool->queue);
-        if (connection == NULL)
-            continue;
-        printf("Handle connection:%d\n", connection->socket_fd);
-        // Should process the http request
-    }
-}
+
 ThreadPool *initialize_threadpool()
 {
     // Allocate a thread pool
@@ -65,8 +54,12 @@ int destroy_threadpool(ThreadPool *threadpool)
     destroy_queue(threadpool->queue);
     free(threadpool->threads);
     free(threadpool);
+    return 0;
 };
 int submit_to_threadpool(ThreadPool *threadpool, Connection *connection)
 {
-    queue_request(threadpool, connection);
+    Request *request = queue_request(threadpool->queue, connection);
+    if (request == NULL)
+        return -1;
+    return 0;
 };
