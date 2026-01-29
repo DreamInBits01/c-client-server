@@ -6,6 +6,7 @@
 #include "multiplexer.h"
 #include "net/listener.h"
 #include <uthash/src/uthash.h>
+#include "workers/threadpool.h"
 /**
  * Initializes a new ConnectionsManager instance.
  *

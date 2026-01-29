@@ -19,13 +19,26 @@ ConnectionsManager *initialize_connections_manager()
     memset(connections_manager, 0, sizeof(ConnectionsManager));
     connections_manager->listening_socket = listening_socket;
     // Create the multiplexer
-    status = init_multiplexer(connections_manager);
-    if (status == -1)
+    int epoll_fd = initialize_multiplexer(connections_manager);
+    if (epoll_fd == -1)
     {
         free(connections_manager);
-        fprintf(stderr, "[initialize_connections_manager] init_multiplexer failed");
+        fprintf(stderr, "[initialize_connections_manager] initialize_multiplexer failed");
         return NULL;
     }
+    // Assign multiplexer
+    connections_manager->epoll_fd = epoll_fd;
+    // Create threadpool
+    ThreadPool *threadpool = initialize_threadpool();
+    if (threadpool == NULL)
+    {
+        destroy_multiplexer(connections_manager->epoll_fd);
+        free(connections_manager);
+        fprintf(stderr, "[initialize_connections_manager] initialize_threadpool failed");
+        return NULL;
+    }
+    // Assign threadpool
+    connections_manager->threadpool = threadpool;
     return connections_manager;
 }
 Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(Connection *), void *handler_context)

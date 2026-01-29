@@ -32,7 +32,7 @@ typedef struct RequestsQueue
     pthread_cond_t not_empty;
     pthread_cond_t not_full;
 } RequestsQueue;
-typedef struct
+typedef struct ThreadPool
 {
     pthread_t *threads;
     RequestsQueue *queue;

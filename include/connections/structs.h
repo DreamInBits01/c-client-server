@@ -1,13 +1,15 @@
 #ifndef CONNECTIONS_STRUCTS_H
 #define CONNECTIONS_STRUCTS_H
-#include "net/structs.h"
 #include <sys/time.h>
-#include "sys/epoll.h"
+#include <sys/epoll.h>
 #include <uthash/src/uthash.h>
+// #include "workers/structs.h"
+#include "net/structs.h"
 #define MAX_CONNECTIONS 4096
 #define MAX_EVENTS 512
 #define REQUEST_BUFFER_SIZE 8192   // 8 KB
 #define RESPONSE_BUFFER_SIZE 16384 // 16 KB
+typedef struct ThreadPool ThreadPool;
 typedef enum
 {
     CONN_STATE_READING,
@@ -55,6 +57,7 @@ typedef struct Connection
 typedef struct
 {
     Connection *connections;
+    ThreadPool *threadpool;
     struct epoll_event events[MAX_EVENTS];
     int epoll_fd;
     int listening_socket;

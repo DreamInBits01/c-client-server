@@ -4,10 +4,10 @@
 #include <unistd.h>
 #include "structs.h"
 /**
- * @brief Initializes the epoll multiplexer for the connections manager
+ * @brief Initializes the epoll multiplexer
  *
- * Creates an epoll instance using epoll_create1 and stores the file descriptor
- * in the connections manager. The epoll instance is used to monitor multiple
+ * Creates an epoll instance using epoll_create1 and returns it.
+ * The epoll instance is used to monitor multiple
  * socket file descriptors for I/O events efficiently.
  *
  * @param connections_manager Pointer to the ConnectionsManager to initialize
@@ -16,7 +16,7 @@
  * @note Must be called before registering any sockets
  * @note The epoll_fd should be cleaned up with destroy_multiplexer
  */
-int init_multiplexer(ConnectionsManager *connections_manager);
+int initialize_multiplexer();
 
 /**
  * @brief Registers a socket with the epoll instance for event monitoring

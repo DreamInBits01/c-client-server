@@ -3,6 +3,7 @@
 #include "structs.h"
 #include "queue.h"
 #include "worker.h"
+#include "connections/structs.h"
 ThreadPool *initialize_threadpool();
 int destroy_threadpool(ThreadPool *threadpool);
 int submit_to_threadpool(ThreadPool *threadpool, Connection *connection);

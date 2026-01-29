@@ -6,7 +6,7 @@ void client_socket_handler(Connection *connection)
         -Submission function shuld worry about rotating the threads an distributing the load
     */
     int status = 0;
-    printf("Handling client %d...\n", connection->socket_fd);
+    ConnectionsManager *connections_manager = (ConnectionsManager *)connection->handler_context;
     status = io_receive(connection);
     if (status == -1)
     {
@@ -21,18 +21,19 @@ void client_socket_handler(Connection *connection)
     memcpy(connection->response.data, connection->request.data, sizeof(connection->request.data));
     connection->response.bytes_prepared = strlen(connection->response.data);
     printf("Prepared response:%s, (%ld bytes)\n", connection->response.data, connection->response.bytes_prepared);
+    submit_to_threadpool(connections_manager->threadpool, connection);
     // Echo request to the client
-    status = io_send(connection);
-    if (status == -1)
-    {
-        printf("Error while sending data\n");
-        deregister_connection(connection->handler_context, connection);
-    }
-    else
-    {
-        printf("Data was sent completely\n");
-    }
-    deregister_connection(connection->handler_context, connection);
+    // status = io_send(connection);
+    // if (status == -1)
+    // {
+    //     printf("Error while sending data\n");
+    //     deregister_connection(connection->handler_context, connection);
+    // }
+    // else
+    // {
+    //     printf("Data was sent completely\n");
+    // }
+    // deregister_connection(connection->handler_context, connection);
 }
 void listening_socket_handler(Connection *connection)
 {

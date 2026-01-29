@@ -1,14 +1,13 @@
 #include "connections/multiplexer.h"
-int init_multiplexer(ConnectionsManager *connections_manager)
+int initialize_multiplexer()
 {
     int epoll_fd = epoll_create1(0);
     if (epoll_fd == -1)
     {
-        fprintf(stderr, "[init_multiplexer] failed\n");
+        fprintf(stderr, "[initialize_multiplexer] failed\n");
         return -1;
     }
-    connections_manager->epoll_fd = epoll_fd;
-    return 0;
+    return epoll_fd;
 }
 int register_socket(int epoll_fd, int socket_fd, __uint32_t events)
 {
