@@ -27,18 +27,7 @@ void client_socket_handler(Connection *connection)
         fprintf(stderr, "[client_socket_handler]: Error while queuing the request\n");
         return;
     }
-    // Echo request to the client
-    // status = io_send(connection);
-    // if (status == -1)
-    // {
-    //     printf("Error while sending data\n");
-    //     deregister_connection(connection->handler_context, connection);
-    // }
-    // else
-    // {
-    //     printf("Data was sent completely\n");
-    // }
-    // deregister_connection(connection->handler_context, connection);
+    printf("[client_socket_handler]: COnnection was queued successfully\n");
 }
 void listening_socket_handler(Connection *connection)
 {
