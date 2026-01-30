@@ -23,4 +23,5 @@ void *mock_routine(void *args)
         }
         deregister_connection(connection->handler_context, connection);
     }
+    return NULL;
 }

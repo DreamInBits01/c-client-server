@@ -21,7 +21,12 @@ void client_socket_handler(Connection *connection)
     memcpy(connection->response.data, connection->request.data, sizeof(connection->request.data));
     connection->response.bytes_prepared = strlen(connection->response.data);
     printf("Prepared response:%s, (%ld bytes)\n", connection->response.data, connection->response.bytes_prepared);
-    submit_to_threadpool(connections_manager->threadpool, connection);
+    status = submit_to_threadpool(connections_manager->threadpool, connection);
+    if (status == -1)
+    {
+        fprintf(stderr, "[client_socket_handler]: Error while queuing the request\n");
+        return;
+    }
     // Echo request to the client
     // status = io_send(connection);
     // if (status == -1)
