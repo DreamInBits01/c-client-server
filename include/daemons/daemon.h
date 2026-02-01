@@ -1,8 +1,10 @@
 #ifndef DAEMON_H
 #define DAEMON_H
 #include <stdbool.h>
+#include <string.h>
 #include <time.h>
-typedef struct PeriodTask
+#include "ds/queue.h"
+typedef struct PeriodicTask
 {
     char name[64];
     void (*handler)(void *ctx);
@@ -10,17 +12,16 @@ typedef struct PeriodTask
     time_t last_run;
     time_t interval_seconds;
     bool enabled;
-    struct PeriodTask *prev; /* needed for a doubly-linked list only */
-    struct PeriodTask *next; /* needed for singly- or doubly-linked lists */
-} PeriodTask;
+    struct PeriodicTask *next; /* needed for singly- or doubly-linked lists */
+} PeriodicTask;
 typedef struct Daemon
 {
-    PeriodTask *tasks;
+    PeriodicTask *tasks;
     time_t last_tick;
 } Daemon;
 
-void initialize_daemon();
-void daemon_register_task();
-void daemon_tick();
-void destroy_daemon();
+Daemon *initialize_daemon();
+PeriodicTask *daemon_register_task();
+int daemon_tick();
+int destroy_daemon();
 #endif
