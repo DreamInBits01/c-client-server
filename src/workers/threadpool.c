@@ -17,8 +17,8 @@ ThreadPool *initialize_threadpool()
         free(thread_pool);
         return NULL;
     }
-
-    thread_pool->queue = initialize_queue(thread_pool->number_of_workers);
+    int queue_capacity = thread_pool->number_of_workers * 10;
+    thread_pool->queue = initialize_queue(queue_capacity, true);
     if (thread_pool->queue == NULL)
     {
         free(thread_pool->threads);
@@ -58,8 +58,8 @@ int destroy_threadpool(ThreadPool *threadpool)
 };
 int submit_to_threadpool(ThreadPool *threadpool, Connection *connection)
 {
-    Request *request = queue_request(threadpool->queue, connection);
-    if (request == NULL)
+    Task *task = queue_task(threadpool->queue, connection);
+    if (task == NULL)
         return -1;
     return 0;
 };

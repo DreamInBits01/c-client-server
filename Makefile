@@ -16,6 +16,7 @@ TARGET = $(BIN_DIR)/server
 
 # Source files
 SRCS = src/main.c \
+       src/ds/queue.c \
        src/connections/manager.c \
        src/connections/handlers.c \
        src/connections/multiplexer.c \
@@ -24,13 +25,13 @@ SRCS = src/main.c \
        src/net/io.c \
        src/workers/threadpool.c \
        src/workers/worker.c \
-       src/workers/queue.c \
        src/events/event_loop.c 
 # Object files
 OBJS = $(SRCS:src/%.c=obj/%.o)
 
 # Header dependencies
 DEPS = include/connections/multiplexer.h \
+       include/ds/queue.h \
        include/connections/manager.h \
        include/connections/structs.h \
        include/connections/handlers.h \
@@ -40,7 +41,6 @@ DEPS = include/connections/multiplexer.h \
        include/net/io.h \
        include/workers/threadpool.h \
        include/workers/worker.h \
-       include/workers/queue.h \
        include/workers/structs.h \
        include/events/event_loop.h 
 

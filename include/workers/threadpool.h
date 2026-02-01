@@ -1,7 +1,7 @@
 #ifndef THREAD_POOL_H
 #define THREAD_POOL_H
 #include "structs.h"
-#include "queue.h"
+#include "ds/queue.h"
 #include "worker.h"
 #include "connections/structs.h"
 ThreadPool *initialize_threadpool();

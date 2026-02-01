@@ -5,7 +5,7 @@ void *mock_routine(void *args)
     while (threadpool->shutdown != 1)
     {
         int status;
-        Connection *connection = dequeue_request(threadpool->queue);
+        Connection *connection = (Connection *)dequeue_task(threadpool->queue);
         if (connection == NULL)
             continue;
         printf("Worker is handling connection:%d\n", connection->socket_fd);

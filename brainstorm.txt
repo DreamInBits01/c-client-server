@@ -15,3 +15,17 @@
 #IO
 -Should handle partial reads 
 -Should handle partial sends 
+
+#Daemon
+-Create a periodic task to be executed, each task should have 
+    -Name
+    -Handler 
+    -Context for the handler  
+    -run interval
+    -last run time 
+-Daemon itself
+    -Has period tasks
+    -Has last_run time 
+    -It runs every second 
+
+-Registering a daemon task 

@@ -12,7 +12,7 @@
 typedef struct ThreadPool ThreadPool;
 typedef enum
 {
-    CONN_STATE_READING,
+    CONN_STATE_RECEIVING,
     CONN_STATE_PROCESSING,
     CONN_STATE_WRITING,
     CONN_STATE_CLOSED

@@ -2,6 +2,8 @@
 int io_receive(Connection *connection)
 {
     connection->request.bytes_received = 0;
+    connection->state = CONN_STATE_RECEIVING;
+    time(&connection->request.request_start_time);
     while (1)
     {
         int bytes_received = recv(

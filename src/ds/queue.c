@@ -1,83 +1,83 @@
-#include "workers/queue.h"
+#include "ds/queue.h"
 
-RequestsQueue *initialize_queue(int number_of_workers)
+Queue *initialize_queue(int capacity, bool has_capacity_limits)
 {
-    RequestsQueue *queue = malloc(sizeof(RequestsQueue));
+    Queue *queue = malloc(sizeof(Queue));
     if (queue == NULL)
     {
         return NULL;
     };
-    memset(queue, 0, sizeof(RequestsQueue));
+    memset(queue, 0, sizeof(Queue));
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->not_empty, NULL);
     pthread_cond_init(&queue->not_full, NULL);
-    queue->queue_capacity = number_of_workers * 10;
-    queue->requests = NULL;
+    queue->has_capacity_limits = has_capacity_limits;
+    queue->queue_capacity = has_capacity_limits ? capacity : -1;
+    queue->tasks = NULL;
     return queue;
 }
-Request *queue_request(RequestsQueue *queue, Connection *connection)
+Task *queue_task(Queue *queue, void *data)
 {
-    Request *request = malloc(sizeof(Request));
-    if (request == NULL)
+    Task *task = malloc(sizeof(Task));
+    if (task == NULL)
     {
         return NULL;
     }
-    memset(request, 0, sizeof(Request));
-    request->connection = connection;
+    memset(task, 0, sizeof(Task));
+    task->data = data;
     pthread_mutex_lock(&queue->mutex);
 
     // Queue is full, producer must wait for the consumers to consume and signal that the queue is not_full
-    while (queue->used_capacity >= queue->queue_capacity)
+    while (queue->has_capacity_limits && queue->tasks_count >= queue->queue_capacity)
         pthread_cond_wait(&queue->not_full, &queue->mutex);
 
     // Produce
-    DL_APPEND(queue->requests, request);
-    queue->used_capacity += 1;
-
+    DL_APPEND(queue->tasks, task);
+    queue->tasks_count += 1;
     // Signal the queue is not empty for workers
     pthread_cond_broadcast(&queue->not_empty);
     pthread_mutex_unlock(&queue->mutex);
-    return request;
+    return task;
 }
-Connection *dequeue_request(RequestsQueue *queue)
+void *dequeue_task(Queue *queue)
 {
-    Request *dequeued;
-    Connection *connection;
+    Task *dequeued;
+    void *data;
     pthread_mutex_lock(&queue->mutex);
 
     // Queue is empty, workers must wait for the queue to be not empty
-    while (queue->used_capacity <= 0)
+    while (queue->tasks_count <= 0)
         pthread_cond_wait(&queue->not_empty, &queue->mutex);
     // Initialize values
-    dequeued = queue->requests;
+    dequeued = queue->tasks;
     // Return value
-    connection = dequeued->connection;
-    if (queue->used_capacity <= 0)
+    data = dequeued->data;
+    if (queue->tasks_count <= 0)
     {
         pthread_mutex_unlock(&queue->mutex);
         return NULL;
     }
     // Delete from the list
-    DL_DELETE(queue->requests, dequeued);
+    DL_DELETE(queue->tasks, dequeued);
 
     // Cleanup
-    queue->used_capacity -= 1;
+    queue->tasks_count -= 1;
     free(dequeued);
 
     // Signal that the queue is not full so the producer can resume
     pthread_cond_signal(&queue->not_full);
     pthread_mutex_unlock(&queue->mutex);
-    return connection;
+    return data;
 }
-size_t queue_used_capacity(RequestsQueue *queue)
+size_t get_queue_tasks_count(Queue *queue)
 {
-    size_t used_capacity;
+    size_t tasks_count;
     pthread_mutex_lock(&queue->mutex);
-    used_capacity = queue->used_capacity;
+    tasks_count = queue->tasks_count;
     pthread_mutex_unlock(&queue->mutex);
-    return used_capacity;
+    return tasks_count;
 }
-int destroy_queue(RequestsQueue *queue)
+int destroy_queue(Queue *queue)
 {
     if (queue == NULL)
         return -1;
@@ -86,10 +86,10 @@ int destroy_queue(RequestsQueue *queue)
     pthread_cond_destroy(&queue->not_full);
 
     // Empty the list
-    Request *tmp, *element;
-    DL_FOREACH_SAFE(queue->requests, element, tmp)
+    Task *tmp, *element;
+    DL_FOREACH_SAFE(queue->tasks, element, tmp)
     {
-        DL_DELETE(queue->requests, element);
+        DL_DELETE(queue->tasks, element);
         free(element);
     }
     free(queue);
