@@ -1,8 +1,7 @@
 #include "events/event_loop.h"
-void event_loop_run(ConnectionsManager *connections_manager)
+void event_loop_run(ConnectionsManager *connections_manager, Daemon *daemon)
 {
     printf("Event loop is running...\n");
-    // time_t last_timeout_check = time(NULL);
     int ready_events;
     while (1)
     {
@@ -22,5 +21,6 @@ void event_loop_run(ConnectionsManager *connections_manager)
             }
             connection->handler(connection);
         }
+        daemon_tick(daemon);
     }
 }

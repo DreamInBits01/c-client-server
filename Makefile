@@ -20,6 +20,7 @@ SRCS = src/main.c \
        src/connections/manager.c \
        src/connections/handlers.c \
        src/connections/multiplexer.c \
+       src/daemons/daemon.c \
        src/net/listener.c \
        src/net/utils.c \
        src/net/io.c \
@@ -39,6 +40,7 @@ DEPS = include/connections/multiplexer.h \
        include/net/structs.h \
        include/net/utils.h \
        include/net/io.h \
+       include/daemons/daemon.h \
        include/workers/threadpool.h \
        include/workers/worker.h \
        include/workers/structs.h \

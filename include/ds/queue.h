@@ -3,6 +3,7 @@
 #include <uthash/src/utlist.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include <pthread.h>
 #include "structs.h"
 Queue *initialize_queue(int capacity, bool has_capacity_limits);

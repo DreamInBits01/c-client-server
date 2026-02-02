@@ -12,7 +12,7 @@
 [Event loop]
 -Should handle timeouts
 -Should close connected sockets if there request_start time is above 10 seconds and their state is processing
-
+-Should create an event_loop context that has a connections manager, a threadpool, and a daemon
 [IO]
 -Should handle partial reads
 -Should handle partial sends

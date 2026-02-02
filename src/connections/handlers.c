@@ -27,7 +27,7 @@ void client_socket_handler(Connection *connection)
         fprintf(stderr, "[client_socket_handler]: Error while queuing the request\n");
         return;
     }
-    printf("[client_socket_handler]: COnnection was queued successfully\n");
+    printf("[client_socket_handler]: Connection was queued successfully\n");
 }
 void listening_socket_handler(Connection *connection)
 {
