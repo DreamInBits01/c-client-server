@@ -52,6 +52,10 @@ int daemon_tick(Daemon *daemon)
         {
             printf("Executing task:%s\n", task->name);
             task->handler(task);
+            /*
+                Must be updated after the handler runs,
+                not after each daemon tick because that produces a bug
+            */
             task->last_run = now;
         }
     }
