@@ -32,7 +32,8 @@ int main()
     }
     // Daemon
     Daemon *daemon = initialize_daemon();
-    daemon_register_task(daemon, "Mock task", mock_handler, connections_manager, 5, true);
+    daemon_register_task(daemon, "Check health", mock_handler, connections_manager, 5, true);
+    daemon_register_task(daemon, "Timeout handling", mock_handler, connections_manager, 10, true);
     // Run event loop with the connection's manager
     event_loop_run(connections_manager, daemon);
 
