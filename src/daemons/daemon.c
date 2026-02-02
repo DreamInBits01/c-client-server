@@ -17,11 +17,16 @@ Daemon *initialize_daemon()
 }
 PeriodicTask *daemon_register_task(Daemon *daemon, char *name, void (*handler)(PeriodicTask *ctx), void *handler_context, int interval_seconds, bool enabled)
 {
+    if (daemon == NULL)
+    {
+        return NULL;
+    }
     PeriodicTask *periodic_task = malloc(sizeof(PeriodicTask));
     if (periodic_task == NULL)
     {
         return NULL;
     };
+    memset(periodic_task, 0, sizeof(PeriodicTask));
     // Set values
     periodic_task->enabled = enabled;
     strncpy(periodic_task->name, name, sizeof(periodic_task->name));
