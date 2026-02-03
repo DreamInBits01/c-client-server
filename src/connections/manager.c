@@ -13,7 +13,7 @@ ConnectionsManager *initialize_connections_manager()
     ConnectionsManager *connections_manager = malloc(sizeof(ConnectionsManager));
     if (connections_manager == NULL)
     {
-        fprintf(stderr, "[initialize_connections_manager] malloc failed");
+        fprintf(stderr, "[initialize_connections_manager] malloc failed\n");
         return NULL;
     }
     memset(connections_manager, 0, sizeof(ConnectionsManager));
@@ -23,7 +23,7 @@ ConnectionsManager *initialize_connections_manager()
     if (epoll_fd == -1)
     {
         free(connections_manager);
-        fprintf(stderr, "[initialize_connections_manager] initialize_multiplexer failed");
+        fprintf(stderr, "[initialize_connections_manager] initialize_multiplexer failed\n");
         return NULL;
     }
     // Assign multiplexer
@@ -34,7 +34,7 @@ ConnectionsManager *initialize_connections_manager()
     {
         destroy_multiplexer(connections_manager->epoll_fd);
         free(connections_manager);
-        fprintf(stderr, "[initialize_connections_manager] initialize_threadpool failed");
+        fprintf(stderr, "[initialize_connections_manager] initialize_threadpool failed\n");
         return NULL;
     }
     // Assign threadpool
@@ -47,7 +47,7 @@ Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*h
     Connection *connection = malloc(sizeof(Connection));
     if (connection == NULL)
     {
-        fprintf(stderr, "[initialize_connection] malloc failed");
+        fprintf(stderr, "[initialize_connection] malloc failed\n");
         return NULL;
     }
     memset(connection, 0, sizeof(Connection));
@@ -70,7 +70,7 @@ int register_connection(ConnectionsManager *connections_manager, Connection *con
     status = register_socket(connections_manager->epoll_fd, connection->socket_fd, EPOLLIN);
     if (status == -1)
     {
-        fprintf(stderr, "[register_connection] register_socket failed");
+        fprintf(stderr, "[register_connection] register_socket failed\n");
         return -1;
     }
     // Add connection to the connections' list
@@ -81,18 +81,18 @@ int deregister_connection(ConnectionsManager *connections_manager, Connection *c
 {
     int status;
     // Deregister socket from the connections manager multiplexer
+    HASH_DEL(connections_manager->connections, connection);
     status = deregister_socket(connections_manager->epoll_fd, connection->socket_fd);
     if (status == -1)
     {
-        fprintf(stderr, "[deregister_connection] deregister_socket failed");
+        fprintf(stderr, "[deregister_connection] deregister_socket failed\n");
         return -1;
     }
-    HASH_DEL(connections_manager->connections, connection);
     // Cleanup the connection
     status = destroy_connection(connection);
     if (status == -1)
     {
-        fprintf(stderr, "[deregister_connection] destroy_connection failed");
+        fprintf(stderr, "[deregister_connection] destroy_connection failed\n");
         return -1;
     }
     return 0;

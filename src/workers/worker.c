@@ -15,13 +15,16 @@ void *mock_routine(void *args)
         if (status == -1)
         {
             printf("Error while sending data\n");
-            deregister_connection(connection->handler_context, connection);
         }
         else
         {
             printf("Data was sent completely\n");
         }
-        deregister_connection(connection->handler_context, connection);
+        status = deregister_connection(connection->handler_context, connection);
+        if (status == -1)
+        {
+            fprintf(stderr, "[mock_routine] error while deregistering connection:%d\n", connection->socket_fd);
+        }
     }
     return NULL;
 }
