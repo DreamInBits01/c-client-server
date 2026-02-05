@@ -28,20 +28,20 @@ ConnectionsManager *initialize_connections_manager()
     }
     // Assign multiplexer
     connections_manager->epoll_fd = epoll_fd;
-    // Create threadpool
-    ThreadPool *threadpool = initialize_threadpool();
-    if (threadpool == NULL)
-    {
-        destroy_multiplexer(connections_manager->epoll_fd);
-        free(connections_manager);
-        fprintf(stderr, "[initialize_connections_manager] initialize_threadpool failed\n");
-        return NULL;
-    }
+    // // Create threadpool
+    // ThreadPool *threadpool = initialize_threadpool();
+    // if (threadpool == NULL)
+    // {
+    //     destroy_multiplexer(connections_manager->epoll_fd);
+    //     free(connections_manager);
+    //     fprintf(stderr, "[initialize_connections_manager] initialize_threadpool failed\n");
+    //     return NULL;
+    // }
     // Assign threadpool
-    connections_manager->threadpool = threadpool;
+    // connections_manager->threadpool = threadpool;
     return connections_manager;
 }
-Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(Connection *), void *handler_context)
+Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(Connection *), ConnectionHandlerContext *handler_context)
 {
     // Create a connection
     Connection *connection = malloc(sizeof(Connection));
@@ -54,7 +54,7 @@ Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*h
     // SET VALUES
     connection->tcp_client = tcp_client;
     connection->socket_fd = socket_fd;
-    connection->handler_context = (void *)handler_context;
+    connection->handler_context = handler_context;
     connection->handler = handler;
     connection->request.data[0] = '\0';
     connection->response.data[0] = '\0';

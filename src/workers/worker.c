@@ -20,7 +20,7 @@ void *mock_routine(void *args)
         {
             printf("Data was sent completely\n");
         }
-        status = deregister_connection(connection->handler_context, connection);
+        status = deregister_connection(connection->handler_context->connections_manager, connection);
         if (status == -1)
         {
             fprintf(stderr, "[mock_routine] error while deregistering connection:%d\n", connection->socket_fd);

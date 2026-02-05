@@ -1,19 +1,19 @@
 #include "events/event_loop.h"
-void event_loop_run(ConnectionsManager *connections_manager, Daemon *daemon)
+void event_loop_run(EventLoopContext *ctx)
 {
     printf("Event loop is running...\n");
     int ready_events;
     while (1)
     {
-        ready_events = epoll_wait(connections_manager->epoll_fd, connections_manager->events, MAX_EVENTS, 3000);
+        ready_events = epoll_wait(ctx->connections_manager->epoll_fd, ctx->connections_manager->events, MAX_EVENTS, 3000);
         for (int i = 0; i < ready_events; i++)
         {
-            printf("Ready Socket:%d\n", connections_manager->events[i].data.fd);
+            printf("Ready Socket:%d\n", ctx->connections_manager->events[i].data.fd);
             // Segmentation fault in HASH_FIND_INT
             Connection *connection = NULL;
             HASH_FIND_INT(
-                connections_manager->connections,
-                &connections_manager->events[i].data.fd,
+                ctx->connections_manager->connections,
+                &ctx->connections_manager->events[i].data.fd,
                 connection);
             if (connection == NULL)
             {
@@ -21,6 +21,6 @@ void event_loop_run(ConnectionsManager *connections_manager, Daemon *daemon)
             }
             connection->handler(connection);
         }
-        daemon_tick(daemon);
+        daemon_tick(ctx->daemon);
     }
 }

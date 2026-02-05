@@ -28,7 +28,7 @@ ConnectionsManager *initialize_connections_manager();
  * @param handler Callback function to handle events for this connection
  * @return Pointer to the newly created Connection
  */
-Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(Connection *), void *handler_context);
+Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(Connection *), ConnectionHandlerContext *handler_context);
 /**
  * Registers a connection with the connections manager.
  *

@@ -9,7 +9,10 @@
 #define MAX_EVENTS 512
 #define REQUEST_BUFFER_SIZE 8192   // 8 KB
 #define RESPONSE_BUFFER_SIZE 16384 // 16 KB
+
+// Forward declarations
 typedef struct ThreadPool ThreadPool;
+typedef struct ConnectionsManager ConnectionsManager;
 typedef enum
 {
     CONN_STATE_RECEIVING,
@@ -29,6 +32,12 @@ typedef struct
     time_t request_start_time;
     char data[REQUEST_BUFFER_SIZE];
 } RequestBuffer;
+typedef struct ConnectionHandlerContext
+{
+    ConnectionsManager *connections_manager;
+    ThreadPool *threadpool;
+} ConnectionHandlerContext;
+
 /*
     Connections will store tcp_client information alongsode the event of that client to be monitored.
     After a period of time of their last connection,
@@ -47,17 +56,17 @@ typedef struct Connection
 
     // Handler and its context
     void (*handler)(struct Connection *);
-    void *handler_context;
+    ConnectionHandlerContext *handler_context;
     UT_hash_handle hh; /* makes this structure hashable */
 } Connection;
 /*
     The connection manager will be responsible to manage clients of the provided listening_socket.
     Events will be used inside the event_loop to be monitored.
 */
-typedef struct
+typedef struct ConnectionsManager
 {
     Connection *connections;
-    ThreadPool *threadpool;
+    // ThreadPool *threadpool;
     struct epoll_event events[MAX_EVENTS];
     int epoll_fd;
     int listening_socket;
