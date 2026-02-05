@@ -21,10 +21,11 @@ int main()
         fprintf(stderr, "[initialize_connections_manager] initialize_threadpool failed\n");
         return EXIT_FAILURE;
     }
-    // Initialize a connection
+    // Initialize connection's handler context
     ConnectionHandlerContext connection_handler_context = {0};
     connection_handler_context.connections_manager = connections_manager;
     connection_handler_context.threadpool = threadpool;
+    // Initialize a connection
     Connection *connection = initialize_connection(
         connections_manager->listening_socket,
         NULL,
@@ -44,8 +45,8 @@ int main()
     }
     // Daemon
     Daemon *daemon = initialize_daemon();
-    daemon_register_task(daemon, "Check health", mock_handler, connections_manager, 5, true);
-    daemon_register_task(daemon, "Timeout handling", mock_handler, connections_manager, 10, true);
+    // daemon_register_task(daemon, "Check health", mock_handler, connections_manager, 5, true);
+    daemon_register_task(daemon, "Timeout handling", timeouts_handler, connections_manager, 5, true);
 
     // Event loop context
     EventLoopContext ctx = {0};

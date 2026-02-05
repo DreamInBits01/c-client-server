@@ -14,10 +14,11 @@ int io_receive(Connection *connection)
         // ERROR FROM RECV
         if (bytes_received == -1)
         {
-            if (errno == EAGAIN || errno == EWOULDBLOCK)
+            if (errno != EAGAIN || errno != EWOULDBLOCK)
             {
                 // No more data available right now (non-blocking socket)
-                return 0;
+                continue;
+                // return 0;
             }
             fprintf(stderr, "[io_receive] error while recveiving from connection:%d: %s\n",
                     connection->socket_fd,
@@ -40,8 +41,9 @@ int io_receive(Connection *connection)
             return -1; // Request too large
         }
         // Should check if the request is complete (http utility);
-        if (is_request_completed(connection))
+        if (is_request_completed(connection) == 0)
         {
+            printf("[io_receive]: message was received completely\n");
             return 0;
         }
     }

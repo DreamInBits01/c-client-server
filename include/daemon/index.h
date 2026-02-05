@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <uthash/src/utlist.h>
 #include "structs.h"
+#include "tasks/timeouts.h"
 Daemon *initialize_daemon();
 void mock_handler(PeriodicTask *task);
 PeriodicTask *daemon_register_task(Daemon *daemon, char *name, void (*handler)(PeriodicTask *ctx), void *handler_context, int interval_seconds, bool enabled);

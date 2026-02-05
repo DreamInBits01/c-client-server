@@ -1,4 +1,5 @@
 #include "events/event_loop.h"
+
 void event_loop_run(EventLoopContext *ctx)
 {
     printf("Event loop is running...\n");
