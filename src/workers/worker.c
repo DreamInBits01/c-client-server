@@ -6,6 +6,7 @@ void *mock_routine(void *args)
     {
         int status;
         Connection *connection = (Connection *)dequeue_task(threadpool->queue);
+        connection->state = CONN_STATE_PROCESSING;
         if (connection == NULL)
             continue;
         printf("Worker is handling connection:%d\n", connection->socket_fd);

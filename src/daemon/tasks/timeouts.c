@@ -11,7 +11,7 @@ void timeouts_handler(PeriodicTask *task)
     {
 
         time_t time_diff = difftime(now, current_connection->request.request_start_time);
-        if (time_diff >= 10 && current_connection->state == CONN_STATE_RECEIVING)
+        if (current_connection->socket_fd != connections_manager->listening_socket && time_diff >= 10 && current_connection->state == CONN_STATE_RECEIVING)
         {
             deregister_connection(connections_manager, current_connection);
         }

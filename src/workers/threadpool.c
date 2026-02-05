@@ -61,5 +61,6 @@ int submit_to_threadpool(ThreadPool *threadpool, Connection *connection)
     Task *task = queue_task(threadpool->queue, connection);
     if (task == NULL)
         return -1;
+    connection->state = CONN_STATE_QUEUED;
     return 0;
 };

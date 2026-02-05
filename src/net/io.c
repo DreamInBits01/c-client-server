@@ -14,7 +14,7 @@ int io_receive(Connection *connection)
         // ERROR FROM RECV
         if (bytes_received == -1)
         {
-            if (errno != EAGAIN || errno != EWOULDBLOCK)
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
             {
                 // No more data available right now (non-blocking socket)
                 continue;
