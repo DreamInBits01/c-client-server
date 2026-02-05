@@ -16,22 +16,6 @@ If the queue is full, the producer will stop
 -
 */
 
-// typedef struct Request
-// {
-//     Connection *connection;
-//     struct Request *prev; /* needed for a doubly-linked list only */
-//     struct Request *next; /* needed for singly- or doubly-linked lists */
-// } Request;
-// typedef struct RequestsQueue
-// {
-//     Request *requests;
-//     // Number of workers * 10
-//     size_t queue_capacity;
-//     size_t used_capacity;
-//     pthread_mutex_t mutex;
-//     pthread_cond_t not_empty;
-//     pthread_cond_t not_full;
-// } RequestsQueue;
 typedef struct ThreadPool
 {
     pthread_t *threads;

@@ -6,7 +6,6 @@ void event_loop_run(EventLoopContext *ctx)
     int ready_events;
     while (1)
     {
-
         ready_events = epoll_wait(ctx->connections_manager->epoll_fd, ctx->connections_manager->events, MAX_EVENTS, 3000);
         for (int i = 0; i < ready_events; i++)
         {
