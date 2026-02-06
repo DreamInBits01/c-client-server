@@ -37,11 +37,13 @@ void *mock_routine(void *args)
         {
             printf("Data was sent completely\n");
         }
-        // status = deregister_connection(connection->handler_context->connections_manager, connection);
-        // if (status == -1)
-        // {
-        //     fprintf(stderr, "[mock_routine] error while deregistering connection:%d\n", connection->socket_fd);
-        // }
+        memset(connection->response.data, 0, sizeof(connection->response.data));
+        memset(connection->request.data, 0, sizeof(connection->request.data));
+        status = deregister_connection(connection->handler_context->connections_manager, connection);
+        if (status == -1)
+        {
+            fprintf(stderr, "[mock_routine] error while deregistering connection:%d\n", connection->socket_fd);
+        }
     }
     return NULL;
 }

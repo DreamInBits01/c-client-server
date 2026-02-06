@@ -10,7 +10,6 @@ void event_loop_run(EventLoopContext *ctx)
         for (int i = 0; i < ready_events; i++)
         {
             printf("Ready Socket:%d\n", ctx->connections_manager->events[i].data.fd);
-            // Segmentation fault in HASH_FIND_INT
             Connection *connection = NULL;
             HASH_FIND_INT(
                 ctx->connections_manager->connections,
