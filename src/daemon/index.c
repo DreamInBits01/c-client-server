@@ -48,7 +48,7 @@ Daemon *initialize_daemon()
     daemon->is_running = 1;
     struct timespec delay = {
         .tv_sec = 0,
-        .tv_nsec = 1000000000};
+        .tv_nsec = 1500000000};
     daemon->delay = delay;
     pthread_mutex_init(&daemon->mutex, NULL);
     pthread_create(&daemon->thread_id, NULL, daemon_tick, daemon);

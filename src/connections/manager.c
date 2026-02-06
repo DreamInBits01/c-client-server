@@ -44,6 +44,8 @@ ConnectionsManager *initialize_connections_manager()
 Connection *initialize_connection(int socket_fd, TCPClient *tcp_client, void (*handler)(Connection *), ConnectionHandlerContext *handler_context)
 {
     // Create a connection
+    if (socket_fd <= handler_context->connections_manager->listening_socket)
+        return NULL;
     Connection *connection = malloc(sizeof(Connection));
     if (connection == NULL)
     {

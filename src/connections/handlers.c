@@ -2,8 +2,7 @@
 void client_socket_handler(Connection *connection)
 {
     /*
-        -Client handler should submit the connection to the thread pool (provided by connections manager)
-        -Submission function shuld worry about rotating the threads an distributing the load
+    Client handler should only worry about submitting to the threadpool without doing any blocking tasks
     */
     int status = 0;
     ConnectionHandlerContext *handler_context = connection->handler_context;

@@ -63,7 +63,7 @@ int io_send(Connection *connection)
                 // No more data available right now (non-blocking socket)
                 return 0;
             }
-            fprintf(stderr, "[io_send] error while recveiving from connection:%d: %s\n",
+            fprintf(stderr, "[io_send] error while sending to connection:%d: %s\n",
                     connection->socket_fd,
                     strerror(errno));
             // Error while sending message

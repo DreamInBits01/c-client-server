@@ -6,7 +6,7 @@ void *mock_routine(void *args)
     {
         int status;
         Connection *connection = (Connection *)dequeue_task(threadpool->queue);
-        connection->state = CONN_STATE_PROCESSING;
+        connection->state = CONN_STATE_RECEIVING;
         if (connection == NULL)
             continue;
         printf("Worker is handling connection:%d\n", connection->socket_fd);
@@ -14,6 +14,7 @@ void *mock_routine(void *args)
         if (status == -1)
         {
             printf("Error while receiving data\n");
+            continue;
         }
         else
         {
@@ -30,16 +31,17 @@ void *mock_routine(void *args)
         if (status == -1)
         {
             printf("Error while sending data\n");
+            continue;
         }
         else
         {
             printf("Data was sent completely\n");
         }
-        status = deregister_connection(connection->handler_context->connections_manager, connection);
-        if (status == -1)
-        {
-            fprintf(stderr, "[mock_routine] error while deregistering connection:%d\n", connection->socket_fd);
-        }
+        // status = deregister_connection(connection->handler_context->connections_manager, connection);
+        // if (status == -1)
+        // {
+        //     fprintf(stderr, "[mock_routine] error while deregistering connection:%d\n", connection->socket_fd);
+        // }
     }
     return NULL;
 }
