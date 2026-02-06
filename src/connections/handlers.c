@@ -7,20 +7,6 @@ void client_socket_handler(Connection *connection)
     */
     int status = 0;
     ConnectionHandlerContext *handler_context = connection->handler_context;
-    status = io_receive(connection);
-    if (status == -1)
-    {
-        printf("Error while receiving data\n");
-    }
-    else
-    {
-        printf("Data was received completely\n");
-    }
-    printf("Request:%s, (%ld bytes)\n", connection->request.data, connection->request.bytes_received);
-    // Copying data from request to response
-    memcpy(connection->response.data, connection->request.data, sizeof(connection->request.data));
-    connection->response.bytes_prepared = strlen(connection->response.data);
-    printf("Prepared response:%s, (%ld bytes)\n", connection->response.data, connection->response.bytes_prepared);
     status = submit_to_threadpool(handler_context->threadpool, connection);
     if (status == -1)
     {

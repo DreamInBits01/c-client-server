@@ -45,9 +45,11 @@ int main()
     }
     // Daemon
     Daemon *daemon = initialize_daemon();
-    // daemon_register_task(daemon, "Check health", mock_handler, connections_manager, 5, true);
     daemon_register_task(daemon, "Timeout handling", timeouts_handler, connections_manager, 5, true);
+    /*
+    Note:Event loop must run on its own thread, not in the main thread
 
+    */
     // Event loop context
     EventLoopContext ctx = {0};
     ctx.connections_manager = connections_manager;

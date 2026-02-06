@@ -10,6 +10,20 @@ void *mock_routine(void *args)
         if (connection == NULL)
             continue;
         printf("Worker is handling connection:%d\n", connection->socket_fd);
+        status = io_receive(connection);
+        if (status == -1)
+        {
+            printf("Error while receiving data\n");
+        }
+        else
+        {
+            printf("Data was received completely\n");
+        }
+        printf("Request:%s, (%ld bytes)\n", connection->request.data, connection->request.bytes_received);
+        // Copying data from request to response
+        memcpy(connection->response.data, connection->request.data, sizeof(connection->request.data));
+        connection->response.bytes_prepared = strlen(connection->response.data);
+        printf("Prepared response:%s, (%ld bytes)\n", connection->response.data, connection->response.bytes_prepared);
         // Should process the http request
         // Echo request to the client
         status = io_send(connection);
