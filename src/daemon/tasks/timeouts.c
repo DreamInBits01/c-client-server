@@ -7,6 +7,7 @@ void timeouts_handler(PeriodicTask *task)
     Connection *current_connection, *tmp;
     ConnectionsManager *connections_manager = (ConnectionsManager *)task->handler_context;
     time_t now;
+    time(&now);
     HASH_ITER(hh, connections_manager->connections, current_connection, tmp)
     {
 
