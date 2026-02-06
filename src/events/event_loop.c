@@ -22,7 +22,6 @@ void event_loop_run(EventLoopContext *ctx)
             }
             connection->handler(connection);
         }
-        // Should run on a separate thread
         daemon_tick(ctx->daemon);
     }
 }

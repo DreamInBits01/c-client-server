@@ -17,8 +17,7 @@ int io_receive(Connection *connection)
             if (errno == EAGAIN || errno == EWOULDBLOCK)
             {
                 // No more data available right now (non-blocking socket)
-                continue;
-                // return 0;
+                return 0;
             }
             fprintf(stderr, "[io_receive] error while recveiving from connection:%d: %s\n",
                     connection->socket_fd,

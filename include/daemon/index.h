@@ -12,6 +12,6 @@
 #include "tasks/timeouts.h"
 Daemon *initialize_daemon();
 PeriodicTask *daemon_register_task(Daemon *daemon, char *name, void (*handler)(PeriodicTask *ctx), void *handler_context, int interval_seconds, bool enabled);
-void daemon_tick(void *ctx);
+int daemon_tick(Daemon *daemon);
 int destroy_daemon(Daemon *daemon);
 #endif
