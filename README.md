@@ -14,7 +14,7 @@ A from-scratch, educational implementation of the HTTP/1.1 protocol using C, raw
 - [Configuration](https://www.google.com/search?q=%23-configuration)
 - [Key Concepts Explained](https://www.google.com/search?q=%23-key-concepts-explained)
 - [Roadmap / Status](https://www.google.com/search?q=%23-roadmap--status)
-- [Contributing & License](https://www.google.com/search?q=%23-contributing--license)
+- [License](https://www.google.com/search?q=%23-contributing--license)
 
 ---
 
