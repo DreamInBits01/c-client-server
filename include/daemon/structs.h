@@ -16,6 +16,7 @@ typedef struct PeriodicTask
 typedef struct Daemon
 {
     PeriodicTask *tasks;
+    int number_of_tasks;
     time_t last_tick;
 } Daemon;
 #endif

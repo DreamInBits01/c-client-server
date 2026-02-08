@@ -39,6 +39,15 @@ Task *queue_task(Queue *queue, void *data)
     pthread_mutex_unlock(&queue->mutex);
     return task;
 }
+
+/*
+To calculate the number of active workers
+-Use pthread self to get the thread id
+-Push it into an array of active workers, if it doesn't exist
+-In the empty condition, delete it from the array
+    -Swap with the last element in the array
+    -Decrease the size of the array
+*/
 void *dequeue_task(Queue *queue)
 {
     Task *dequeued;
@@ -47,7 +56,10 @@ void *dequeue_task(Queue *queue)
 
     // Queue is empty, workers must wait for the queue to be not empty
     while (queue->tasks_count <= 0)
+    {
+        // Decrease the number of workers
         pthread_cond_wait(&queue->not_empty, &queue->mutex);
+    }
     // Initialize values
     dequeued = queue->tasks;
     // Return value
@@ -57,9 +69,9 @@ void *dequeue_task(Queue *queue)
         pthread_mutex_unlock(&queue->mutex);
         return NULL;
     }
-    // Delete from the list
+    // Increase the number of workers
+    //  Delete from the list
     DL_DELETE(queue->tasks, dequeued);
-
     // Cleanup
     queue->tasks_count -= 1;
     free(dequeued);

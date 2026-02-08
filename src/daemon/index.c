@@ -60,6 +60,7 @@ PeriodicTask *daemon_register_task(Daemon *daemon, char *name, void (*handler)(P
     periodic_task->interval_seconds = interval_seconds;
     // Append task
     LL_PREPEND(daemon->tasks, periodic_task);
+    daemon->number_of_tasks++;
     return periodic_task;
 }
 

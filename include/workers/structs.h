@@ -22,6 +22,5 @@ typedef struct ThreadPool
     Queue *queue;
     size_t number_of_workers;
     volatile int shutdown;
-    volatile int active_workers;
 } ThreadPool;
 #endif

@@ -45,12 +45,14 @@ int main()
     }
     // Daemon
     Daemon *daemon = initialize_daemon();
-    daemon_register_task(daemon, "Timeout handling", timeouts_handler, connections_manager, 5, true);
     // Event loop context
     EventLoopContext ctx = {0};
     ctx.connections_manager = connections_manager;
     ctx.daemon = daemon;
     ctx.threadpool = threadpool;
+    daemon_register_task(daemon, "Timeouts", timeouts_handler, connections_manager, 5, true);
+    daemon_register_task(daemon, "Check Health", check_health_handler, &ctx, 5, true);
+
     // Run event loop with the context
     event_loop_run(&ctx);
 
