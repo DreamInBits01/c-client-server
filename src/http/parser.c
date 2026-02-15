@@ -11,8 +11,6 @@ char *look_ahead(char *input)
 char *lex_next(char **input, ParserState *current_state)
 {
     char buffer[128] = {0};
-    char crlf_buffer[5] = {0};
-    int crlf_buffer_index = 0;
     int buffer_index = 0;
     char *current_character_pointer = *input;
     while (*current_character_pointer)
@@ -58,9 +56,6 @@ char *lex_next(char **input, ParserState *current_state)
                 {
                     break;
                 }
-                // Regular character, reset crlf
-                crlf_buffer_index = 0;
-                memset(crlf_buffer, 0, sizeof(crlf_buffer));
                 buffer[buffer_index] = current_character;
                 buffer_index++;
 
