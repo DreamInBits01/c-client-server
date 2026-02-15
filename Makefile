@@ -26,6 +26,7 @@ SRCS = src/main.c \
        src/net/listener.c \
        src/net/utils.c \
        src/net/io.c \
+       src/http/parser.c \
        src/workers/threadpool.c \
        src/workers/worker.c \
        src/events/event_loop.c 
@@ -42,6 +43,8 @@ DEPS = include/connections/multiplexer.h \
        include/net/structs.h \
        include/net/utils.h \
        include/net/io.h \
+       include/http/structs.h \
+       include/http/parser.h \
        include/daemon/index.h \
        include/daemon/tasks/timeouts.h \
        include/daemon/tasks/check_health.h \

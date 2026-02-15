@@ -51,7 +51,7 @@ int main()
     ctx.daemon = daemon;
     ctx.threadpool = threadpool;
     daemon_register_task(daemon, "Timeouts", timeouts_handler, connections_manager, 5, true);
-    daemon_register_task(daemon, "Check Health", check_health_handler, &ctx, 5, true);
+    daemon_register_task(daemon, "Check Health", check_health_handler, &ctx, 50, true);
 
     // Run event loop with the context
     event_loop_run(&ctx);

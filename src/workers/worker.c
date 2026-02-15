@@ -21,6 +21,7 @@ void *mock_routine(void *args)
             printf("Data was received completely\n");
         }
         printf("Request:%s (%ld bytes)\n", connection->request.data, connection->request.bytes_received);
+        parse_all(connection->request.data);
         // Copying data from request to response
         memcpy(connection->response.data, connection->request.data, sizeof(connection->request.data));
         connection->response.bytes_prepared = strlen(connection->response.data);

@@ -10,7 +10,7 @@ void check_health_handler(PeriodicTask *task)
     // Get current timestamp
     time_t now = time(NULL);
     char timestamp[26];
-    ctime_r(&now, timestamp);
+    memcpy(timestamp, ctime(&now), sizeof(timestamp));
     timestamp[24] = '\0'; // Remove newline
 
     printf("\n");
@@ -58,7 +58,7 @@ void check_health_handler(PeriodicTask *task)
            event_loop_context->daemon->number_of_tasks);
     // printf("║   Uptime                     : %-27ld s ║\n", uptime_seconds);
 
-    // Memory Metrics (if available)
+    // Memory Metrics
     printf("║                                                            ║\n");
     printf("║ Memory                                                     ║\n");
     // printf("║   RSS (Resident Set Size)    : %-24ld KB ║\n", rss_kb);
