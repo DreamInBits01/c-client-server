@@ -42,6 +42,7 @@ int io_receive(Connection *connection)
         // Should check if the request is complete (http utility);
         if (is_request_completed(connection) == 0)
         {
+            connection->request.data[connection->request.bytes_received] = '\0';
             printf("[io_receive]: message was received completely\n");
             return 0;
         }

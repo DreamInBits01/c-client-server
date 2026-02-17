@@ -9,7 +9,7 @@ typedef enum
     HEADER_NAME,
     HEADER_VALUE,
     BODY,
-    END_OF_REQUEST
+    BODY_END
 } ParserState;
 char *look_ahead(char *input);
 char *lex_next(char **input, ParserState *current_state);
